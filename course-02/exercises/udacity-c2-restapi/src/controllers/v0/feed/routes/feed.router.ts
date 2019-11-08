@@ -32,7 +32,7 @@ router.get ('/:id', async (req: Request, res: Response)=>
             {
                 res.status(200).send (found_item);
             })
-            .catch (err=>
+           .catch (err=>
             {
                 res.status (400).send (err);
             });
@@ -45,7 +45,40 @@ router.patch('/:id',
     requireAuth, 
     async (req: Request, res: Response) => {
         //@TODO try it yourself
-        res.send(500).send("not implemented")
+        const id = req.params.id;
+        const caption = req.body.caption;
+        const url = req.body.url;
+        if (!id)
+        {
+            res.status(400).send('ID required');
+        }
+        if (!caption)
+        {
+            res.status(400).send ('Caption required');
+        }
+        if (!url)
+        {
+            res.status(400).send ('url required');
+        }
+         await FeedItem.update(
+            {
+                url : url,
+                caption : caption
+            },
+            {
+             where:
+             {
+                 id: id
+             }   
+            })
+             .then (updatedItem =>
+                {
+                    res.status(200).send('Item Updated');
+                })
+               .catch(err=>
+                    {
+                        res.status(400).send(err);
+                    });
 });
 
 

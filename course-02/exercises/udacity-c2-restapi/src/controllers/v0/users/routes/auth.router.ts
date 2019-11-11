@@ -87,7 +87,12 @@ router.post('/login', async (req: Request, res: Response) => {
     // Generate JWT
     const jwt = generateJWT(user);
 
-    res.status(200).send({ auth: true, token: jwt, user: user.short()});
+    res.status(200).send(
+        { 
+            auth: true, 
+            token: jwt, 
+            user: user.short()
+        });
 });
 
 //register a new user

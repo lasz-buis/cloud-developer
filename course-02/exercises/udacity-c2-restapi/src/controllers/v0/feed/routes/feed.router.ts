@@ -58,7 +58,7 @@ router.patch('/:id',
         }
         if (!url)
         {
-            res.status(400).send ('url required');
+            res.status(400).send ('URL required');
         }
          await FeedItem.update(
             {

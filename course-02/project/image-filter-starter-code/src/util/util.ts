@@ -37,7 +37,7 @@ export async function deleteLocalFiles(files:Array<string>)
     }
 }
 
-export async function list_directory (dir:string, 
+export async function itterate_directory (dir:string, 
     callback:(list:Array<string>)=>void)
 {
     console.log(dir);

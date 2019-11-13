@@ -38,7 +38,7 @@ import {filterImageFromURL, deleteLocalFiles, list_directory} from './util/util'
     // 3. Send the resulting file in response
     res.status (200).sendFile (filtered_image);
     // 4. Delete any files on the server after filtering
-    list_directory(__dirname + "/util/tmp/");
+    list_directory(__dirname + "/util/tmp/", deleteLocalFiles);
     // deleteLocalFiles (server_images);
   });
   //! END @TODO1

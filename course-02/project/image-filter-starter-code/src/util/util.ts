@@ -30,21 +30,25 @@ export async function filterImageFromURL(inputURL: string): Promise<string>{
 // useful to cleanup after tasks
 // INPUTS
 //    files: Array<string> an array of absolute paths to files
-export async function deleteLocalFiles(files:Array<string>){
+export async function deleteLocalFiles(files:Array<string>)
+{
     for( let file of files) {
         fs.unlinkSync(file);
     }
 }
 
-export async function list_directory (dir:string)
+export async function list_directory (dir:string, 
+    callback:(list:Array<string>)=>void)
 {
     console.log(dir);
-	var directory_listing : Array<string>;
+    // var directory_listing : Array<string>;
+    var directory_listing : Array <string> = new Array ();
 	fs.readdir(dir, (err, files) => 
 	{
 		files.forEach(file => 
 		{
             directory_listing.push (dir + file);
 		});
-	});
+        callback (directory_listing);
+    });
 }

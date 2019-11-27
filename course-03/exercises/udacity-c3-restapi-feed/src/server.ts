@@ -11,7 +11,15 @@ const c = config.dev;
 
 (async () => {
   await sequelize.addModels(V0MODELS);
-  await sequelize.sync();
+  await sequelize.sync()
+  .then (() =>
+  {
+    console.log ('sequelize synched')
+  })
+  .catch(err =>
+  {
+    console.log ('ERROR: ' + err);
+  });
 
   const app = express();
   const port = process.env.PORT || 8080; // default port to listen

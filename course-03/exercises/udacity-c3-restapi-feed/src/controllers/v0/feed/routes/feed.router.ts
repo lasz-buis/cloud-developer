@@ -1,32 +1,34 @@
 import { Router, Request, Response } from 'express';
 import { FeedItem } from '../models/FeedItem';
-import { NextFunction } from 'connect';
-import * as jwt from 'jsonwebtoken';
 import * as AWS from '../../../../aws';
-import * as c from '../../../../config/config';
+import { config } from '../../../../config/config';
+import { NextFunction } from 'connect';
+import * as bcrypt from 'bcrypt';
+import * as jwt from 'jsonwebtoken';
 
 const router: Router = Router();
 
-export function requireAuth(req: Request, res: Response, next: NextFunction) {
- //   return next();
-     if (!req.headers || !req.headers.authorization){
-         return res.status(401).send({ message: 'No authorization headers.' });
-     }
-     
- 
-     const token_bearer = req.headers.authorization.split(' ');
-     if(token_bearer.length != 2){
-         return res.status(401).send({ message: 'Malformed token.' });
-     }
-     
-     const token = token_bearer[1];
-     return jwt.verify(token, c.config.jwt.secret , (err, decoded) => {
-       if (err) {
-         return res.status(500).send({ auth: false, message: 'Failed to authenticate.' });
-       }
-       return next();
-     });
- }
+export function requireAuth(req: Request, res: Response, next: NextFunction) 
+{
+    if (!req.headers || !req.headers.authorization){
+        return res.status(401).send({ message: 'No authorization headers.' });
+    }
+    
+
+    const token_bearer = req.headers.authorization.split(' ');
+    if(token_bearer.length != 2){
+        return res.status(401).send({ message: 'Malformed token.' });
+    }
+    
+    const token = token_bearer[1];
+
+    return jwt.verify(token, config.jwt.secret, (err, decoded) => {
+      if (err) {
+        return res.status(500).send({ auth: false, message: 'Failed to authenticate.' });
+      }
+      return next();
+    });
+}
 
 // Get all feed items
 router.get('/', async (req: Request, res: Response) => {
@@ -39,20 +41,69 @@ router.get('/', async (req: Request, res: Response) => {
     res.send(items);
 });
 
-// Get a specific resource
-router.get('/:id', 
-    async (req: Request, res: Response) => {
-    let { id } = req.params;
-    const item = await FeedItem.findByPk(id);
-    res.send(item);
+//@TODO
+//Add an endpoint to GET a specific resource by Primary Key
+router.get ('/:id', async (req: Request, res: Response)=>
+{
+    const id = req.params.id;
+    if (!id)
+    {
+        res.status(400).send('ID param required');
+    }
+    else
+    {
+        const item = await FeedItem.findByPk (id)
+            .then (found_item=>
+            {
+                res.status(200).send (found_item);
+            })
+           .catch (err=>
+            {
+                res.status (400).send (err);
+            });
+        }
 });
+
 
 // update a specific resource
 router.patch('/:id', 
     requireAuth, 
     async (req: Request, res: Response) => {
         //@TODO try it yourself
-        res.send(500).send("not implemented")
+        const id = req.params.id;
+        const caption = req.body.caption;
+        const url = req.body.url;
+        if (!id)
+        {
+            res.status(400).send('ID required');
+        }
+        if (!caption)
+        {
+            res.status(400).send ('Caption required');
+        }
+        if (!url)
+        {
+            res.status(400).send ('URL required');
+        }
+         await FeedItem.update(
+            {
+                url : url,
+                caption : caption
+            },
+            {
+             where:
+             {
+                 id: id
+             }   
+            })
+             .then (updatedItem =>
+                {
+                    res.status(200).send('Item Updated');
+                })
+               .catch(err=>
+                    {
+                        res.status(400).send(err);
+                    });
 });
 
 

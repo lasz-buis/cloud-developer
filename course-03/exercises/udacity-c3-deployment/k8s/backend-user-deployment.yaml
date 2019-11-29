@@ -1,58 +1,74 @@
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
+  creationTimestamp: null
   labels:
     service: backend-user
   name: backend-user
 spec:
-  replicas: 2
+  progressDeadlineSeconds: 2147483647
+  replicas: 1
+  revisionHistoryLimit: 2147483647
+  selector:
+    matchLabels:
+      service: backend-user
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+    type: RollingUpdate
   template:
     metadata:
+      creationTimestamp: null
       labels:
         service: backend-user
     spec:
       containers:
-      - image: scheele/udacity-restapi-user
-        name: backend-user 
-        imagePullPolicy: Always  
-        resources:
-          requests:
-            memory: "64Mi"
-            cpu: "250m"
-          limits:
-            memory: "1024Mi"
-            cpu: "500m"      
-        env:
+      - env:
         - name: URL
           valueFrom:
             configMapKeyRef:
+              key: URL
               name: env-config
-              key: URL 
         - name: JWT_SECRET
           valueFrom:
             configMapKeyRef:
-              name: env-config
               key: JWT_SECRET
+              name: env-config
         - name: POSTGRESS_DB
           valueFrom:
             configMapKeyRef:
-              name: env-config
               key: POSTGRESS_DB
+              name: env-config
         - name: POSTGRESS_HOST
           valueFrom:
             configMapKeyRef:
-              name: env-config
               key: POSTGRESS_HOST
+              name: env-config
         - name: POSTGRESS_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: env-secret
               key: POSTGRESS_PASSWORD
+              name: env-secret
         - name: POSTGRESS_USERNAME
           valueFrom:
             secretKeyRef:
-              name: env-secret
               key: POSTGRESS_USERNAME
+              name: env-secret
+        image: lasz/udacity-restapi-user
+        imagePullPolicy: Always
+        name: backend-user
+        resources:
+          limits:
+            cpu: 500m
+            memory: 1Gi
+          requests:
+            cpu: 250m
+            memory: 64Mi
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+      dnsPolicy: ClusterFirst
       restartPolicy: Always
-
-
+      schedulerName: default-scheduler
+      securityContext: {}
+      terminationGracePeriodSeconds: 30

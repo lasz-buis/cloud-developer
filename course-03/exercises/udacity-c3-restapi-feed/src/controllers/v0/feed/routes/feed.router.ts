@@ -28,8 +28,9 @@ export function requireAuth(req: Request, res: Response, next: NextFunction) {
      });
  }
 
-// Get all feed items
+// Get all feed items 
 router.get('/', async (req: Request, res: Response) => {
+    console.log ("[DEBUG] Get all feed items");
     const items = await FeedItem.findAndCountAll({order: [['id', 'DESC']]});
     items.rows.map((item) => {
             if(item.url) {
@@ -42,17 +43,66 @@ router.get('/', async (req: Request, res: Response) => {
 // Get a specific resource
 router.get('/:id', 
     async (req: Request, res: Response) => {
+    console.log ("[DEBUG] Get item by  id");
     let { id } = req.params;
-    const item = await FeedItem.findByPk(id);
-    res.send(item);
+    if (!id)
+    {
+        res.status(400).send ("id is required");
+    }
+    else
+    {
+        const item = await FeedItem.findByPk (id)
+            .then (found_item=>
+            {
+                res.status(200).send (found_item);
+            })
+           .catch (err=>
+            {
+                res.status (400).send (err);
+            });
+        }
 });
 
 // update a specific resource
 router.patch('/:id', 
     requireAuth, 
     async (req: Request, res: Response) => {
+        console.log ("[DEBUG] Patch item by ID");
         //@TODO try it yourself
-        res.send(500).send("not implemented")
+        const id = req.params.id;
+        const caption = req.body.caption;
+        const url = req.body.url;
+        if (!id)
+        {
+            res.status(400).send('ID required');
+        }
+        if (!caption)
+        {
+            res.status(400).send ('Caption required');
+        }
+        if (!url)
+        {
+            res.status(400).send ('URL required');
+        }
+         await FeedItem.update(
+            {
+                url : url,
+                caption : caption
+            },
+            {
+             where:
+             {
+                 id: id
+             }   
+            })
+             .then (updatedItem =>
+                {
+                    res.status(200).send('Item Updated');
+                })
+               .catch(err=>
+                    {
+                        res.status(400).send(err);
+                    });
 });
 
 
@@ -60,7 +110,12 @@ router.patch('/:id',
 router.get('/signed-url/:fileName', 
     requireAuth, 
     async (req: Request, res: Response) => {
+    console.log ("[DEBUG] Get signed URL");
     let { fileName } = req.params;
+    if (!fileName)
+    {
+        res.status(400).send ("file name is required");
+    }
     const url = AWS.getPutSignedUrl(fileName);
     res.status(201).send({url: url});
 });
@@ -71,8 +126,9 @@ router.get('/signed-url/:fileName',
 router.post('/', 
     requireAuth, 
     async (req: Request, res: Response) => {
-    const caption = req.body.caption;
-    const fileName = req.body.url;
+    console.log ("[DEBUG] Post file to S3 bucket");
+    const caption : string = req.body.caption;
+    const fileName : string = req.body.url;
 
     // check Caption is valid
     if (!caption) {

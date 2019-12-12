@@ -30,10 +30,10 @@ spec:
             configMapKeyRef:
               key: URL
               name: env-config
-        - name: AWS_BUCKET
+        - name: AWS_MEDIA_BUCKET
           valueFrom:
             configMapKeyRef:
-              key: AWS_BUCKET
+              key: AWS_MEDIA_BUCKET
               name: env-config
         - name: AWS_PROFILE
           valueFrom:
@@ -50,10 +50,10 @@ spec:
             configMapKeyRef:
               key: JWT_SECRET
               name: env-config
-        - name: POSTGRESS_DB
+        - name: POSTGRESS_DATABASE
           valueFrom:
             configMapKeyRef:
-              key: POSTGRESS_DB
+              key: POSTGRESS_DATABASE
               name: env-config
         - name: POSTGRESS_HOST
           valueFrom:

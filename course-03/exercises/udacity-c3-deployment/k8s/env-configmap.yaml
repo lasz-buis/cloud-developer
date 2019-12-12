@@ -1,13 +1,13 @@
 apiVersion: v1
 kind: ConfigMap
 data:
-  AWS_BUCKET: lasz-udagram-dev
-  AWS_PROFILE: udagram-dev
-  AWS_REGION: us-west-2
-  JWT_SECRET: hello-world
-  POSTGRESS_DB: lasz_udagram_dev
-  POSTGRESS_HOST: lasz-udagram-dev.cmdzikf1r4tb.us-west-2.rds.amazonaws.com
-  URL: http://localhost:8100  
+  AWS_MEDIA_BUCKET  : lasz-udagram-dev
+  AWS_PROFILE       : udagram-dev
+  AWS_REGION        : us-west-2
+  JWT_SECRET        : helloworld
+  POSTGRESS_DATABASE: lasz_udagram_dev
+  POSTGRESS_HOST    : lasz-udagram-dev.cmdzikf1r4tb.us-west-2.rds.amazonaws.com
+  URL               : http://localhost:8100  
 metadata:
   name: env-config
   

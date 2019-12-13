@@ -41,6 +41,13 @@ spec:
             memory: 64Mi
         terminationMessagePath: /dev/termination-log
         terminationMessagePolicy: File
+        readinessProbe:
+          httpGet:
+             path: /
+             port: 8080
+             initialDelaySeconds: 5
+             periodSeconds: 5
+             successThreshold: 1
       dnsPolicy: ClusterFirst
       restartPolicy: Always
       schedulerName: default-scheduler

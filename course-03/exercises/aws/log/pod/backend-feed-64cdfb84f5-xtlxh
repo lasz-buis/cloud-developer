@@ -1,0 +1,19 @@
+
+> udacity-c2-restapi@1.0.0 prod /usr/src/app
+> tsc && node ./www/server.js
+
+(node:25) UnhandledPromiseRejectionWarning: SequelizeConnectionError: password authentication failed for user "lasz_udagram_dev
+"
+    at /usr/src/app/node_modules/sequelize/lib/dialects/postgres/connection-manager.js:182:24
+    at Connection.connectingErrorHandler (/usr/src/app/node_modules/pg/lib/client.js:163:14)
+    at Connection.emit (events.js:210:5)
+    at Connection.EventEmitter.emit (domain.js:476:20)
+    at Socket.<anonymous> (/usr/src/app/node_modules/pg/lib/connection.js:125:12)
+    at Socket.emit (events.js:210:5)
+    at Socket.EventEmitter.emit (domain.js:476:20)
+    at addChunk (_stream_readable.js:308:12)
+    at readableAddChunk (_stream_readable.js:289:11)
+    at Socket.Readable.push (_stream_readable.js:223:10)
+    at TCP.onStreamRead (internal/stream_base_commons.js:182:23)
+(node:25) UnhandledPromiseRejectionWarning: Unhandled promise rejection. This error originated either by throwing inside of an async function without a catch block, or by rejecting a promise which was not handled with .catch(). (rejection id: 1)
+(node:25) [DEP0018] DeprecationWarning: Unhandled promise rejections are deprecated. In the future, promise rejections that are not handled will terminate the Node.js process with a non-zero exit code.

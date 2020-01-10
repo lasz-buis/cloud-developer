@@ -13,7 +13,9 @@ interface GroupsListState {
   groups: GroupModel[]
 }
 
-export class GroupsList extends React.PureComponent<GroupsListProps, GroupsListState> {
+export class GroupsList extends React.PureComponent<GroupsListProps, 
+                                                    GroupsListState> 
+{
   state: GroupsListState = {
     groups: []
   }

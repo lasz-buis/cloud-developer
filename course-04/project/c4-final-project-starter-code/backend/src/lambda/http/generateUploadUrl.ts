@@ -7,8 +7,8 @@ const s3 = new AWS.S3({
 });
 
 // const imagesTable   = process.env.IMAGES_TABLE;
-const bucketName    = process.env.SIGNED_URL_EXPIRATION;
-const urlExpiration = process.env.IMAGES_S3_BUCKET;
+const bucketName    = process.env.TODO_IMAGE_BUCKET;
+const urlExpiration = process.env.SIGNED_URL_EXPIRATION;
 
 export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
   const todoId = event.pathParameters.todoId

@@ -27,19 +27,20 @@ export async function createTodoItem(
   createTodoRequest: CreateTodoRequest,
   jwtToken: string): Promise<TodoItem> 
 {
-  const bucketName = process.env.TODO_IMAGE_BUCKET;
+  // const bucketName = process.env.TODO_IMAGE_BUCKET;
   const itemId = uuid.v4();
   const userId = parseUserId(jwtToken);
-  return await todoAccess.createTodoItem(
+  const item = await todoAccess.createTodoItem(
     {
       userId,
       todoId: itemId,
       createdAt: new Date().toISOString(),
       name: createTodoRequest.name,
       dueDate: createTodoRequest.dueDate,
-      done: false,
-      attachmentUrl: `https://${bucketName}.s3.amazonaws.com/${itemId}`
-    })
+      done: false//,
+      // attachmentUrl: `https://${bucketName}.s3.amazonaws.com/${itemId}`
+    });
+  return item;
 }
 /**
  * @description Updates an item in the table 

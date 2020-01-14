@@ -69,13 +69,13 @@ functions:
           method: post
           path: todos
           cors: true
-          # authorizer: Auth
-          # reqValidatorName: RequestBodyValidator
-          # documentation:
-          #   summary: Create a new TODO item
-          #   description: Create a new TODO item
-          #   requestModels:
-          #     'application/json': TodoRequest
+          authorizer: Auth
+          reqValidatorName: RequestBodyValidator
+          documentation:
+            summary: Create a new TODO item
+            description: Create a new TODO item
+            requestModels:
+              'application/json': TodoCreateRequest
     iamRoleStatements:
       - Effect: "Allow"
         Action:
@@ -101,7 +101,7 @@ functions:
           method: patch
           path: todos/{todoId}
           cors: true
-          # authorizer: Auth
+          authorizer: Auth
     iamRoleStatements:
       - Effect: "Allow"
         Action:
@@ -127,7 +127,7 @@ functions:
           method: delete
           path: todos/{todoId}
           cors: true
-          # authorizer: Auth
+          authorizer: Auth
     iamRoleStatements:
       - Effect: "Allow"
         Action:
@@ -265,6 +265,9 @@ custom:
         title: Todo API
         description: Serverless application for TODO lists
     models:
-      - name: TodoRequest
+      - name: TodoCreateRequest
         contentType: application/json
         schema: ${file(models/create-todo-request.json)}
+      - name: TodoUpdateRequest
+        contentType: application/json
+        schema: ${file(models/update-todo-request.json)}

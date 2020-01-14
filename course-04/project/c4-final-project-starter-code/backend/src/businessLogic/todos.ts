@@ -27,6 +27,7 @@ export async function createTodoItem(
   createTodoRequest: CreateTodoRequest,
   jwtToken: string): Promise<TodoItem> 
 {
+  const bucketName = process.env.TODO_IMAGE_BUCKET;
   const itemId = uuid.v4();
   const userId = parseUserId(jwtToken);
   return await todoAccess.createTodoItem(
@@ -37,7 +38,7 @@ export async function createTodoItem(
       name: createTodoRequest.name,
       dueDate: createTodoRequest.dueDate,
       done: false,
-      attachmentUrl: 'x' // s3-url-fucntion
+      attachmentUrl: `https://${bucketName}.s3.amazonaws.com/${itemId}`
     })
 }
 /**

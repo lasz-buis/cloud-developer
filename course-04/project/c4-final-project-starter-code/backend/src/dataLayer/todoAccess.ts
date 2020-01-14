@@ -13,31 +13,9 @@ export class TodoAccess {
     private readonly todoTable = process.env.TODO_TABLE) {
   }
 
-  async getTodoItem (): Promise <TodoItem>
-  {
-    /*
-     console.log('Finding TODO item');
-     const result = 
-          await this.dynamoDBClient
-            .query({
-              TableName: todoTable,
-              IndexName: 'index-name',
-              KeyConditionExpression: 'paritionKey = :paritionKey',
-              ExpressionAttributeValues: {
-                ':paritionKey': partitionKeyValue
-              }
-            })
-            .promise()
-    */
-    return null;
-  }
-
   async getTodoList(userId: string): Promise<TodoItem[]> 
   {
     console.log('Getting all TODO items for current user')
-    // const result = await this.docClient.scan({
-    //   TableName: this.todoTable
-    // }).promise();
     const result = 
     await this.docClient
       .query({
@@ -73,14 +51,14 @@ export class TodoAccess {
           'userId': userId,
           'todoId': todoId
         },
-        UpdateExpression: 'set name = :name, dueDate = :dueDate, done = :done',
-        ConditionExpression: 'userId = :userId, todoId = :todoId',
+        UpdateExpression: 'set name = :n, dueDate = :dd, done = :d',
         ExpressionAttributeValues:
         {
-          ':name' : todo.name,
-          ':dueDate': todo.dueDate,
-          ':done': todo.done,
-        }
+          ':n': todo.name,
+          ':dd': todo.dueDate,
+          ':d': todo.done,
+        },
+        ReturnValues:"UPDATED_NEW"
       }).promise();
   }
 
@@ -93,14 +71,6 @@ export class TodoAccess {
         {
           "userId": userId,
           "todoId": todoId
-        },
-        ExpressionAttributeNames:
-        {
-
-        },
-        ExpressionAttributeValues:
-        {
-          
         }
       }).promise();
   }

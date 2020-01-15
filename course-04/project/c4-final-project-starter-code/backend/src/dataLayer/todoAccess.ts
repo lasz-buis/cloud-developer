@@ -1,3 +1,8 @@
+/** This file contains all the Data Layer calls to TODO functions.
+ * All calls are AWS specific and would need to be changed in if 
+ * one wants to utilise code portability. 
+ */
+
 import * as AWS  from 'aws-sdk'
 import * as AWSXRay from 'aws-xray-sdk'
 import {DeleteObjectOutput} from 'aws-sdk/clients/s3'
@@ -47,6 +52,9 @@ export class TodoAccess {
     todoId: string,
     userId: string)
   {
+    // update a specified item belonging to a specific user
+    // the 'name' field is a keyword and is aliased using
+    // attribute names
     await this.docClient.update (
       {
         TableName: this.todoTable,
@@ -75,6 +83,8 @@ export class TodoAccess {
     todoId: string,
     userId: string)
   {
+    // update the attachment URL of a specified item belonging
+    // to a specific user
     await this.docClient.update (
       {
         TableName: this.todoTable,
@@ -126,6 +136,8 @@ export class TodoAccess {
     // {
     //   await this.deleteTodoItemAttachment (todoId);
     // }
+    
+    // Delete a specified item belonging to a specific user
     await this.docClient.delete (
       {
         TableName: this.todoTable,

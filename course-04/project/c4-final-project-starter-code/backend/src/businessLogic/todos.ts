@@ -1,11 +1,17 @@
-import * as uuid from 'uuid'
+/**
+ * This file specifies Business Layer functions for TODO functions
+ * All functions here call the Data Layer functions soas to improve
+ * code portability
+ */
 
+import * as uuid from 'uuid'
 import { TodoItem } from '../models/TodoItem'
 import { TodoAccess } from '../dataLayer/todoAccess'
 import { CreateTodoRequest } from '../requests/CreateTodoRequest'
 import { UpdateTodoRequest } from '../requests/UpdateTodoRequest'
 import { parseUserId } from '../auth/utils'
 
+// Instantiate objects 
 const todoAccess = new TodoAccess()
 
 /**

@@ -1,7 +1,8 @@
 import 'source-map-support/register'
 import * as AWS  from 'aws-sdk'
-
-import { APIGatewayProxyEvent, APIGatewayProxyResult, APIGatewayProxyHandler } from 'aws-lambda'
+import * as middy from 'middy'
+import { cors } from 'middy/middlewares'
+import { APIGatewayProxyEvent, APIGatewayProxyResult} from 'aws-lambda'
 const s3 = new AWS.S3({
   signatureVersion: 'v4'
 });
@@ -10,7 +11,7 @@ const s3 = new AWS.S3({
 const bucketName    = process.env.TODO_IMAGE_BUCKET;
 const urlExpiration = process.env.SIGNED_URL_EXPIRATION;
 
-export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
+export const handler = middy (async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
   const todoId = event.pathParameters.todoId
 
   // TODO: Return a presigned URL to upload a file for a TODO item with the provided id
@@ -23,8 +24,9 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
       uploadUrl: url
     })
   }
-  return undefined
-}
+});
+
+handler.use(cors({credentials: true}));
 
 function getUploadUrl(todoId: string): string {
   return s3.getSignedUrl('putObject', {

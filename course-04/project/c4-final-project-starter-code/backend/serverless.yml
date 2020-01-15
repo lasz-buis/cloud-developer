@@ -152,6 +152,7 @@ functions:
           method: post
           path: todos/{todoId}/attachment
           cors: true
+          authorizer: Auth
     iamRoleStatements:
       - Effect: "Allow"
         Action:

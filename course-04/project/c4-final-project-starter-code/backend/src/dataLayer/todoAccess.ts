@@ -8,7 +8,7 @@ import * as AWSXRay from 'aws-xray-sdk'
 import {DeleteObjectOutput} from 'aws-sdk/clients/s3'
 import { DocumentClient } from 'aws-sdk/clients/dynamodb'
 const XAWS = AWSXRay.captureAWS(AWS);
-const s3 = new AWS.S3({signatureVersion: 'v4'});
+const s3 = new XAWS.S3({signatureVersion: 'v4'});
 import { TodoItem } from '../models/TodoItem'
 import { TodoUpdate } from '../models/TodoUpdate'
 import { createLogger } from '../utils/logger'
@@ -40,6 +40,7 @@ export class TodoAccess {
   }
 
   async createTodoItem(todo: TodoItem): Promise<TodoItem> {
+    logger.info('Creating TODO item for current user');
     await this.docClient.put({
       TableName: this.todoTable,
       Item: todo
@@ -55,6 +56,11 @@ export class TodoAccess {
     // update a specified item belonging to a specific user
     // the 'name' field is a keyword and is aliased using
     // attribute names
+    logger.info('Updating TODO item for current user',
+    {
+      user: userId,
+      todo
+    });
     await this.docClient.update (
       {
         TableName: this.todoTable,
@@ -83,6 +89,7 @@ export class TodoAccess {
     todoId: string,
     userId: string)
   {
+    logger.info('Updating TODO item image URL for current user');
     // update the attachment URL of a specified item belonging
     // to a specific user
     await this.docClient.update (
@@ -104,6 +111,7 @@ export class TodoAccess {
 
   async getTodoItem (todoId: string, userId: string) : Promise <TodoItem>
   {
+    logger.info('Fetching TODO item for current user');
     const result = await this.docClient
     .query({
       TableName: this.todoTable,
@@ -119,6 +127,7 @@ export class TodoAccess {
 
   async deleteTodoItemAttachment (todoId: string): Promise<DeleteObjectOutput>
   {
+    logger.info('Deleting TODO item image URL for current user');
     return await s3.deleteObject(
       {
         Bucket: this.todoTable, 
@@ -136,7 +145,7 @@ export class TodoAccess {
     // {
     //   await this.deleteTodoItemAttachment (todoId);
     // }
-    
+    logger.info('Deleting TODO item for current user');
     // Delete a specified item belonging to a specific user
     await this.docClient.delete (
       {

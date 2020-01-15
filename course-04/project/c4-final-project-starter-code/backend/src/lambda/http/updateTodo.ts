@@ -19,7 +19,7 @@ export const handler = middy (async (event: APIGatewayProxyEvent): Promise<APIGa
   await updateTodoItem (updatedTodo, todoId, jwtToken);
   return {
     statusCode: 200,
-    body: 'Successfully Updated'
+    body: '{}'
   }
   return undefined
 });

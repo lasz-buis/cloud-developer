@@ -21,7 +21,7 @@ export const handler = async (
   logger.info('Authorizing a user: %s', event.authorizationToken);
   try {
     const jwtToken : JwtPayload = await verifyToken(event.authorizationToken);
-    logger.info('User was authorized', jwtToken);
+    logger.info('User was authorized', { Token: jwtToken});
     
     return {
       principalId: jwtToken.sub,
@@ -58,7 +58,6 @@ export const handler = async (
 async function verifyToken(authHeader: string): Promise<JwtPayload> 
 {
   const token = getToken(authHeader)
-  logger.info('JWT created : %s', token)
   // const jwt: Jwt = decode(token, { complete: true }) as Jwt
   // TODO: Implement token verification
   // You should implement it similarly to how it was implemented for the exercise for the lesson 5

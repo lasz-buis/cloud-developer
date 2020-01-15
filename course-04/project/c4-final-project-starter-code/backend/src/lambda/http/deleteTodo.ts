@@ -12,6 +12,10 @@ export const handler = middy(async (event: APIGatewayProxyEvent): Promise<APIGat
   await deleteTodoItem(todoId, jwtToken);
   return {
     statusCode: 201,
+    headers: {
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Credentials': true
+    },
     body: 'Successfully deleted item'
   };
 });

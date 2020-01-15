@@ -11,32 +11,75 @@ const cloudwatch = new AWS.CloudWatch();
 
 exports.handler = async (event) => {
   // TODO: Use these variables to record metric values
-  let endTime
-  let requestWasSuccessful
+  let endTime = 0;
+  let requestWasSuccessful = true;
+  const startTime = timeInMs();
+  let http_status = 0;
 
-  const startTime = timeInMs()
-  await axios.get(url)
-
-  // Example of how to write a single data point
-  // await cloudwatch.putMetricData({
-  //   MetricData: [
-  //     {
-  //       MetricName: 'MetricName', // Use different metric names for different values, e.g. 'Latency' and 'Successful'
-  //       Dimensions: [
-  //         {
-  //           Name: 'ServiceName',
-  //           Value: serviceName
-  //         }
-  //       ],
-  //       Unit: '', // 'Count' or 'Milliseconds'
-  //       Value: 0 // Total value
-  //     }
-  //   ],
-  //   Namespace: 'Udacity/Serveless'
-  // }).promise()
-
+  await axios.get(url).then((response)=> 
+  {
+    console.log (response.data);
+    console.log (response.status);
+    console.log (response.statusText);
+    console.log (response.headers);
+    console.log (response.config);
+    http_status = response.status;
+    if (http_status == '200')
+    {
+      requestWasSuccessful = true;
+    }
+    else
+    {
+      requestWasSuccessful = false;
+    }
+    endTime = timeInMs();
+  })
+  .catch (err=>
+  {
+    console.log ('Error :', err);
+  }); 
   // TODO: Record time it took to get a response
-  // TODO: Record if a response was successful or not
+  await cloudwatch.putMetricData({
+    MetricData: [
+      {
+        MetricName: 'Latency', 
+        Dimensions: [
+          {
+            Name: 'ServiceName',
+            Value: serviceName
+          }
+        ],
+        Unit: 'Milliseconds',
+        Value: endTime - startTime // Total value
+      }
+    ],
+    Namespace: 'Udacity/Serveless'
+  }).promise();
+
+  try
+  {
+    // TODO: Record if a response was successful or not
+    await cloudwatch.putMetricData({
+      MetricData: [
+        {
+          MetricName: 'Succcess', 
+          Dimensions: [
+            {
+              Name: 'ServiceName',
+              Value: serviceName
+            }
+          ],
+          Unit: 'Status',
+          Value: http_status
+        }
+      ],
+      Namespace: 'Udacity/Serveless'
+    }).promise();
+  }
+  catch (err)
+  {
+    console.log (err);
+  }
 }
 
 function timeInMs() {

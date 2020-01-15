@@ -1,0 +1,62 @@
+Name:         backend-user-57754cf445-7d8dg
+Namespace:    default
+Priority:     0
+Node:         ip-172-31-52-170.us-west-2.compute.internal/172.31.52.170
+Start Time:   Wed, 11 Dec 2019 11:04:23 +0200
+Labels:       pod-template-hash=57754cf445
+              service=backend-user
+Annotations:  cni.projectcalico.org/podIP: 10.244.3.6/32
+Status:       Running
+IP:           10.244.3.6
+IPs:
+  IP:           10.244.3.6
+Controlled By:  ReplicaSet/backend-user-57754cf445
+Containers:
+  backend-user:
+    Container ID:   docker://797318d5a1c67a55da94b3a304670388a55ffe9b8e1c59f68d7489f1ab9e3b85
+    Image:          lasz/udacity-restapi-user
+    Image ID:       docker-pullable://lasz/udacity-restapi-user@sha256:85f04d6b87baac5d8c44ed2e53ba0ccc7f85152dae181b9b4b363452a9c9b27f
+    Port:           <none>
+    Host Port:      <none>
+    State:          Running
+      Started:      Wed, 11 Dec 2019 11:04:37 +0200
+    Ready:          True
+    Restart Count:  0
+    Limits:
+      cpu:     500m
+      memory:  1Gi
+    Requests:
+      cpu:     250m
+      memory:  64Mi
+    Environment:
+      URL:                 <set to the key 'URL' of config map 'env-config'>                 Optional: false
+      JWT_SECRET:          <set to the key 'JWT_SECRET' of config map 'env-config'>          Optional: false
+      POSTGRESS_DATABASE:  <set to the key 'POSTGRESS_DATABASE' of config map 'env-config'>  Optional: false
+      POSTGRESS_HOST:      <set to the key 'POSTGRESS_HOST' of config map 'env-config'>      Optional: false
+      POSTGRESS_PASSWORD:  <set to the key 'POSTGRESS_PASSWORD' in secret 'env-secret'>      Optional: false
+      POSTGRESS_USERNAME:  <set to the key 'POSTGRESS_USERNAME' in secret 'env-secret'>      Optional: false
+    Mounts:
+      /var/run/secrets/kubernetes.io/serviceaccount from default-token-4dhh9 (ro)
+Conditions:
+  Type              Status
+  Initialized       True 
+  Ready             True 
+  ContainersReady   True 
+  PodScheduled      True 
+Volumes:
+  default-token-4dhh9:
+    Type:        Secret (a volume populated by a Secret)
+    SecretName:  default-token-4dhh9
+    Optional:    false
+QoS Class:       Burstable
+Node-Selectors:  <none>
+Tolerations:     node.kubernetes.io/not-ready:NoExecute for 300s
+                 node.kubernetes.io/unreachable:NoExecute for 300s
+Events:
+  Type    Reason     Age        From                                                  Message
+  ----    ------     ----       ----                                                  -------
+  Normal  Scheduled  <unknown>  default-scheduler                                     Successfully assigned default/backend-user-57754cf445-7d8dg to ip-172-31-52-170.us-west-2.compute.internal
+  Normal  Pulling    12m        kubelet, ip-172-31-52-170.us-west-2.compute.internal  Pulling image "lasz/udacity-restapi-user"
+  Normal  Pulled     12m        kubelet, ip-172-31-52-170.us-west-2.compute.internal  Successfully pulled image "lasz/udacity-restapi-user"
+  Normal  Created    12m        kubelet, ip-172-31-52-170.us-west-2.compute.internal  Created container backend-user
+  Normal  Started    12m        kubelet, ip-172-31-52-170.us-west-2.compute.internal  Started container backend-user

@@ -1,0 +1,13 @@
+Name:              reverseproxy
+Namespace:         default
+Labels:            service=reverseproxy
+Annotations:       kubectl.kubernetes.io/last-applied-configuration:
+                     {"apiVersion":"v1","kind":"Service","metadata":{"annotations":{},"labels":{"service":"reverseproxy"},"name":"reverseproxy","namespace":"de...
+Selector:          service=reverseproxy
+Type:              ClusterIP
+IP:                10.104.247.150
+Port:              8080  8080/TCP
+TargetPort:        8080/TCP
+Endpoints:         10.244.3.7:8080,10.244.3.8:8080
+Session Affinity:  None
+Events:            <none>

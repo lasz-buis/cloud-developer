@@ -1,0 +1,13 @@
+Name:              backend-user
+Namespace:         default
+Labels:            service=backend-user
+Annotations:       kubectl.kubernetes.io/last-applied-configuration:
+                     {"apiVersion":"v1","kind":"Service","metadata":{"annotations":{},"labels":{"service":"backend-user"},"name":"backend-user","namespace":"de...
+Selector:          service=backend-user
+Type:              ClusterIP
+IP:                10.109.47.249
+Port:              8080  8080/TCP
+TargetPort:        8080/TCP
+Endpoints:         10.244.3.6:8080
+Session Affinity:  None
+Events:            <none>

@@ -1,6 +1,7 @@
 apiVersion: v1
 kind: ConfigMap
 data:
+<<<<<<< HEAD
   AWS_MEDIA_BUCKET: ___INSERT_AWS_BUCKET___
   AWS_PROFILE: ___INSERT_AWS_PROFILE___
   AWS_REGION: ___INSERT_AWS_REGION___
@@ -8,6 +9,15 @@ data:
   POSTGRESS_DATABASE: ___INSERT_POSTGRESS_DB___
   POSTGRESS_HOST: ___INSERT_POSTGRESS_HOST___
   URL: http://localhost:8100  
+=======
+  AWS_MEDIA_BUCKET  : udagramlaszdev
+  AWS_PROFILE       : default
+  AWS_REGION        : us-east-1
+  JWT_SECRET        : helloworld
+  POSTGRESS_DATABASE: udagramlaszdev
+  POSTGRESS_HOST    : lasz-udagram-dev.cmdzikf1r4tb.us-west-2.rds.amazonaws.com
+  URL               : http://localhost:8100  
+>>>>>>> release/1.0.2
 metadata:
   name: env-config
   

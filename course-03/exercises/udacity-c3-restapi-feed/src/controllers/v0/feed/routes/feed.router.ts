@@ -30,8 +30,9 @@ export function requireAuth(req: Request, res: Response, next: NextFunction)
     });
 }
 
-// Get all feed items
+// Get all feed items 
 router.get('/', async (req: Request, res: Response) => {
+    console.log ("[DEBUG] Get all feed items");
     const items = await FeedItem.findAndCountAll({order: [['id', 'DESC']]});
     items.rows.map((item) => {
             if(item.url) {
@@ -41,6 +42,7 @@ router.get('/', async (req: Request, res: Response) => {
     res.send(items);
 });
 
+<<<<<<< HEAD
 //@TODO
 //Add an endpoint to GET a specific resource by Primary Key
 router.get ('/:id', async (req: Request, res: Response)=>
@@ -49,6 +51,16 @@ router.get ('/:id', async (req: Request, res: Response)=>
     if (!id)
     {
         res.status(400).send('ID param required');
+=======
+// Get a specific resource
+router.get('/:id', 
+    async (req: Request, res: Response) => {
+    console.log ("[DEBUG] Get item by  id");
+    let { id } = req.params;
+    if (!id)
+    {
+        res.status(400).send ("id is required");
+>>>>>>> release/1.0.2
     }
     else
     {
@@ -69,6 +81,7 @@ router.get ('/:id', async (req: Request, res: Response)=>
 router.patch('/:id', 
     requireAuth, 
     async (req: Request, res: Response) => {
+        console.log ("[DEBUG] Patch item by ID");
         //@TODO try it yourself
         const id = req.params.id;
         const caption = req.body.caption;
@@ -111,7 +124,12 @@ router.patch('/:id',
 router.get('/signed-url/:fileName', 
     requireAuth, 
     async (req: Request, res: Response) => {
+    console.log ("[DEBUG] Get signed URL");
     let { fileName } = req.params;
+    if (!fileName)
+    {
+        res.status(400).send ("file name is required");
+    }
     const url = AWS.getPutSignedUrl(fileName);
     res.status(201).send({url: url});
 });
@@ -122,8 +140,9 @@ router.get('/signed-url/:fileName',
 router.post('/', 
     requireAuth, 
     async (req: Request, res: Response) => {
-    const caption = req.body.caption;
-    const fileName = req.body.url;
+    console.log ("[DEBUG] Post file to S3 bucket");
+    const caption : string = req.body.caption;
+    const fileName : string = req.body.url;
 
     // check Caption is valid
     if (!caption) {

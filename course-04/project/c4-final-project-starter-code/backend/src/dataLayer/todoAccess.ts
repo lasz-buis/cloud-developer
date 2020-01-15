@@ -6,6 +6,10 @@ const XAWS = AWSXRay.captureAWS(AWS);
 const s3 = new AWS.S3({signatureVersion: 'v4'});
 import { TodoItem } from '../models/TodoItem'
 import { TodoUpdate } from '../models/TodoUpdate'
+import { createLogger } from '../utils/logger'
+
+const logger = createLogger('todo');
+
 export class TodoAccess {
 
   constructor(
@@ -15,7 +19,7 @@ export class TodoAccess {
 
   async getTodoList(userId: string): Promise<TodoItem[]> 
   {
-    console.log('Getting all TODO items for current user')
+    logger.info('Getting all TODO items for current user');
     const result = 
     await this.docClient
       .query({
@@ -114,13 +118,14 @@ export class TodoAccess {
 
   async deleteTodoItem (todoId: string, userId: string)
   {
-    // Get the TODO item
-    const result = await this.getTodoItem (todoId, userId);
-    // If an attachment exists, then we delete it
-    if (typeof(result.attachmentUrl === "undefined"))
-    {
-      await this.deleteTodoItemAttachment (todoId);
-    }
+    // // Get the TODO item
+    // const result = await this.getTodoItem (todoId, userId);
+    // console.log ('Todo Found: ' + result);
+    // // If an attachment exists, then we delete it
+    // if (typeof(result.attachmentUrl === "undefined"))
+    // {
+    //   await this.deleteTodoItemAttachment (todoId);
+    // }
     await this.docClient.delete (
       {
         TableName: this.todoTable,

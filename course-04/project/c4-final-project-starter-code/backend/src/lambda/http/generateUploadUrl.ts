@@ -23,6 +23,7 @@ export const handler = middy (async (event: APIGatewayProxyEvent): Promise<APIGa
   const userId = parseUserId(split[1]);
   // TODO: Return a presigned URL to upload a file for a TODO item with the provided id
   const url : string = getUploadUrl(todoId, userId);
+  // const url : string = getUploadUrl(todoId);
   return  {
     statusCode: 201,
     body: JSON.stringify(
@@ -34,6 +35,8 @@ export const handler = middy (async (event: APIGatewayProxyEvent): Promise<APIGa
 });
 
 handler.use(cors({credentials: true}));
+
+// function getUploadUrl(todoId: string): string {
 
 function getUploadUrl(todoId: string, userId : string): string {
   todoAccess.updateTodoItemAttachment(

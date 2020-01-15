@@ -31,7 +31,7 @@ provider:
     INDEX_KEY: timestamp
     INDEX_NAME: timestampIndex
     TODO_TABLE: lasz-todo-${self:provider.stage}
-    TODO_IMAGES_TABLE: lasz-todo-images-${self:provider.stage}
+    # TODO_IMAGES_TABLE: lasz-todo-images-${self:provider.stage}
     TODO_IMAGE_BUCKET: lasz-todo-images-${self:provider.stage}
     SIGNED_URL_EXPIRATION: 300
 

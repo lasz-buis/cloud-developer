@@ -1,5 +1,5 @@
 /**
- * This file specifies Business Layer functions for TODO functions
+ * This file specifies Business Layer calls to TODO functions
  * All functions here call the Data Layer functions soas to improve
  * code portability
  */

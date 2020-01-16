@@ -15,7 +15,7 @@ const bucketName    = process.env.TODO_IMAGE_BUCKET;
 const urlExpiration = process.env.SIGNED_URL_EXPIRATION;
 
 export const handler = middy (async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
-  // extract the TODO ID from the path
+  // Extract the TODO ID from the path
   const todoId = event.pathParameters.todoId
   // Extract the User ID from the JWT
   const authorization = event.headers.Authorization;

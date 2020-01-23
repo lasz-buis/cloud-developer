@@ -56,7 +56,7 @@ variable "ssh_agent_socket" {
 # Provider specific settings
 
 variable "aws_region" {
-  default     = "eu-west-3"
+  default     = "us-east-1"
   description = "AWS region to speak to"
 }
 
@@ -66,17 +66,17 @@ variable "vpc_id" {
 }
 
 variable "control_plane_type" {
-  default     = "t3.medium"
+  default     = "t2.medium"
   description = "AWS instance type"
 }
 
 variable "control_plane_volume_size" {
-  default     = 100
+  default     = 50
   description = "Size of the EBS volume, in Gb"
 }
 
 variable "worker_type" {
-  default     = "t3.medium"
+  default     = "t2.medium"
   description = "instance type for workers"
 }
 

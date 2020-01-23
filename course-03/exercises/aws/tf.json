@@ -8,7 +8,7 @@
       }
     ],
     "value": {
-      "endpoint": "demo-api-lb-1fbce95c239f86e0.elb.us-west-2.amazonaws.com"
+      "endpoint": "udagram-api-lb-1891cbe69c2cdee8.elb.us-east-1.amazonaws.com"
     }
   },
   "kubeone_hosts": {
@@ -56,21 +56,21 @@
     "value": {
       "control_plane": {
         "cloud_provider": "aws",
-        "cluster_name": "demo",
+        "cluster_name": "udagram",
         "hostnames": [
-          "ip-172-31-57-186.us-west-2.compute.internal",
-          "ip-172-31-28-4.us-west-2.compute.internal",
-          "ip-172-31-8-244.us-west-2.compute.internal"
+          "ip-172-31-18-151.ec2.internal",
+          "ip-172-31-40-42.ec2.internal",
+          "ip-172-31-14-109.ec2.internal"
         ],
         "private_address": [
-          "172.31.57.186",
-          "172.31.28.4",
-          "172.31.8.244"
+          "172.31.18.151",
+          "172.31.40.42",
+          "172.31.14.109"
         ],
         "public_address": [
-          "34.210.81.193",
-          "52.40.36.111",
-          "18.237.202.176"
+          "18.207.149.187",
+          "54.166.249.83",
+          "34.234.100.224"
         ],
         "ssh_agent_socket": "env:SSH_AUTH_SOCK",
         "ssh_port": 22,
@@ -84,7 +84,7 @@
     "type": [
       "object",
       {
-        "demo-pool1": [
+        "udagram-pool1": [
           "object",
           {
             "providerSpec": [
@@ -111,7 +111,7 @@
                     "tags": [
                       "object",
                       {
-                        "demo-workers": "string"
+                        "udagram-workers": "string"
                       }
                     ],
                     "vpcId": "string"
@@ -138,25 +138,25 @@
       }
     ],
     "value": {
-      "demo-pool1": {
+      "udagram-pool1": {
         "providerSpec": {
           "cloudProviderSpec": {
-            "ami": "ami-0a7d051a1c4b54f65",
-            "availabilityZone": "us-west-2a",
+            "ami": "ami-07ebfd5b3428b6f4d",
+            "availabilityZone": "us-east-1a",
             "diskIops": 500,
             "diskSize": 50,
             "diskType": "gp2",
-            "instanceProfile": "demo-host",
-            "instanceType": "t3.medium",
-            "region": "us-west-2",
+            "instanceProfile": "udagram-host",
+            "instanceType": "t2.medium",
+            "region": "us-east-1",
             "securityGroupIDs": [
-              "sg-0bae908bc826a14ea"
+              "sg-096ebe6a484a17805"
             ],
-            "subnetId": "subnet-2c91b867",
+            "subnetId": "subnet-294e9e64",
             "tags": {
-              "demo-workers": "pool1"
+              "udagram-workers": "pool1"
             },
-            "vpcId": "vpc-bd7ac8c5"
+            "vpcId": "vpc-29722e53"
           },
           "operatingSystem": "ubuntu",
           "operatingSystemSpec": {

@@ -16,6 +16,10 @@ limitations under the License.
 
 provider "aws" {
   region = var.aws_region
+  profile = "default"
+  access_key = "ASIAWII4GNXSOKYSWW25"
+  secret_key = "V8NmPKIedX3mcTnNKQGji7o6jNgOWd3u46QawDx9"
+  token = "FwoGZXIvYXdzELn//////////wEaDBaxrkPkwscSCzK2ByLBAVe3fENczT4dsrwuIdfkRNooyKBLdr/nSUzZobYHBgNUUbPIHN5qZEMR8b6vvysR7hERSuiqj1FZnJGQQRi5+Cx9gRe1av2VYhAZEW1jAzi0ZXly+Kq5gF7I/ZDxFY4Ypw2nMS/x/RGra9NUI3e6D99W34CB4nIZotnkHvL3JCMAtBEBu+WhQtxckl4vA/idl8SZe9XuuIwPQcboGOqlTQDFo1AQoNxszkhmK6vYxwNhJbXHII6RHzzsjFdy4bZJp/sojZel8QUyLUN1cER4MF1Ofg1EZ2SF1ilfJKb4cEG4RikM0qEpVPHDeOkZmQkv+IQxwIz97g=="
 }
 
 locals {
@@ -68,7 +72,9 @@ data "aws_subnet" "az_c" {
 }
 
 locals {
-  all_subnets = [data.aws_subnet.az_a.id, data.aws_subnet.az_b.id, data.aws_subnet.az_c.id]
+  all_subnets = [data.aws_subnet.az_a.id, 
+                 data.aws_subnet.az_b.id, 
+                 data.aws_subnet.az_c.id]
 }
 
 resource "aws_default_vpc" "default" {
@@ -179,7 +185,10 @@ resource "aws_lb" "control_plane" {
   load_balancer_type = "network"
   subnets            = local.all_subnets
 
-  tags = map("Cluster", var.cluster_name, local.kube_cluster_tag, "shared")
+  tags = map("Cluster", 
+              var.cluster_name, 
+              local.kube_cluster_tag, 
+              "shared")
 }
 
 resource "aws_lb_target_group" "control_plane_api" {
@@ -220,7 +229,7 @@ resource "aws_instance" "control_plane" {
   availability_zone      = data.aws_availability_zones.available.names[count.index % local.az_count]
   subnet_id              = local.all_subnets[count.index % local.az_count]
 
-  ebs_optimized = true
+  ebs_optimized = false
 
   root_block_device {
     volume_type = "gp2"

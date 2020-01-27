@@ -17,9 +17,10 @@ limitations under the License.
 provider "aws" {
   region = var.aws_region
   profile = "default"
-  access_key = "ASIAWII4GNXSOKYSWW25"
-  secret_key = "V8NmPKIedX3mcTnNKQGji7o6jNgOWd3u46QawDx9"
-  token = "FwoGZXIvYXdzELn//////////wEaDBaxrkPkwscSCzK2ByLBAVe3fENczT4dsrwuIdfkRNooyKBLdr/nSUzZobYHBgNUUbPIHN5qZEMR8b6vvysR7hERSuiqj1FZnJGQQRi5+Cx9gRe1av2VYhAZEW1jAzi0ZXly+Kq5gF7I/ZDxFY4Ypw2nMS/x/RGra9NUI3e6D99W34CB4nIZotnkHvL3JCMAtBEBu+WhQtxckl4vA/idl8SZe9XuuIwPQcboGOqlTQDFo1AQoNxszkhmK6vYxwNhJbXHII6RHzzsjFdy4bZJp/sojZel8QUyLUN1cER4MF1Ofg1EZ2SF1ilfJKb4cEG4RikM0qEpVPHDeOkZmQkv+IQxwIz97g=="
+  # shared_credentials_file = "~/.aws/credentials"
+  access_key = "ASIAWII4GNXSF3N2XEFV"
+  secret_key = "8rj9aNITVzPTiWnAgWXLEFy3KbVq0hmQL8ka959C"
+  token = "FwoGZXIvYXdzENf//////////wEaDAp4cDG3pbW8wO+7+iLBAZXRvq7PDAd7ZEakl823OEGWGDvoEZRscopuyVUpdNqMIlROF6kCTvjCMxmBOSdtpW2aV7IlFEAF9/tgh5lcHEdkIUa6ECIQjrrRlGeYmhdwqO3aNNttIJbdO1/n6jbZ4rZ9ijNs2CJfDFZxCjZT+iuxxJNImWnxmPIIN1dIcXRTrnHWeIZIYo5NtCLvAmxEeRAGhFkL4P6wDtfBsQ/bNADHD5FDqVAZNG7irX5djlH3zS/58z6+XlYxssvRGrXqVekoku6r8QUyLUNMXSUew0NwT+gxBReBbbzjNJLhAMqKUjfic7N7t3YFYXeA5aicb7GcUDDfQw=="
 }
 
 locals {
@@ -33,6 +34,7 @@ locals {
   ami = var.ami == "" ? data.aws_ami.ubuntu.id : var.ami
 }
 
+################################# DATA SOURCES #################################
 data "aws_availability_zones" "available" {
 }
 
@@ -71,19 +73,22 @@ data "aws_subnet" "az_c" {
   vpc_id            = local.vpc_id
 }
 
+############################### NETWORKING SETUP ###############################
+
 locals {
   all_subnets = [data.aws_subnet.az_a.id, 
                  data.aws_subnet.az_b.id, 
                  data.aws_subnet.az_c.id]
 }
 
-resource "aws_default_vpc" "default" {
-}
+resource "aws_default_vpc" "default" {}
 
 resource "aws_key_pair" "deployer" {
   key_name   = "${var.cluster_name}-deployer-key"
   public_key = file(var.ssh_public_key_file)
 }
+
+################################### FIREWALL ###################################
 
 resource "aws_security_group" "common" {
   name        = "${var.cluster_name}-common"
@@ -128,6 +133,8 @@ resource "aws_security_group" "control_plane" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 }
+
+##################################### IAM ######################################
 
 resource "aws_iam_role" "role" {
   name = "${var.cluster_name}-host"
@@ -179,6 +186,8 @@ EOF
 
 }
 
+################################## KUBE-API LB #################################
+
 resource "aws_lb" "control_plane" {
   name               = "${var.cluster_name}-api-lb"
   internal           = false
@@ -216,8 +225,10 @@ resource "aws_lb_target_group_attachment" "control_plane_api" {
   port             = 6443
 }
 
+############################ CONTROL PLANE INSTANCES ###########################
+
 resource "aws_instance" "control_plane" {
-  count = 3
+  count = 1
 
   tags = map("Name", "${var.cluster_name}-control_plane-${count.index + 1}", local.kube_cluster_tag, "shared")
 

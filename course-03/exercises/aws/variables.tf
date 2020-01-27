@@ -66,7 +66,7 @@ variable "vpc_id" {
 }
 
 variable "control_plane_type" {
-  default     = "t2.medium"
+  default     = "t3.medium"
   description = "AWS instance type"
 }
 
@@ -76,7 +76,7 @@ variable "control_plane_volume_size" {
 }
 
 variable "worker_type" {
-  default     = "t2.medium"
+  default     = "t3.medium"
   description = "instance type for workers"
 }
 

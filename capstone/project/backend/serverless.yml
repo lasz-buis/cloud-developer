@@ -2,15 +2,20 @@ service:
   name: serverless-todo-app
 
 plugins:
-  - serverless-aws-documentation
+  # CI SECTION
   - serverless-dynamodb-local
-  - serverless-iam-roles-per-function
   - serverless-offline
+  # CD SECTION
   - serverless-plugin-canary-deployments
-  - serverless-plugin-tracing
+  # CODE BASE SECTION
+  - serverless-aws-documentation
+  - serverless-iam-roles-per-function
   - serverless-reqvalidator-plugin
   - serverless-webpack
-  - serverless-s3-sync
+  # - serverless-s3-sync
+  # MONITORING SECTION
+  - serverless-plugin-tracing
+
 # package:
 #   individually: true
 
@@ -32,9 +37,8 @@ provider:
     INDEX_NAME: timestampIndex
     TODO_TABLE: lasz-todo-${self:provider.stage}
     CONNECTIONS_TABLE: Connections-${self:provider.stage}
-    # TODO_IMAGES_TABLE: lasz-todo-images-${self:provider.stage}
     TODO_IMAGE_BUCKET: lasz-todo-images-${self:provider.stage}
-    STATIC_HOST: lasz-todo-site-${self:provider.stage}
+    # STATIC_HOST: lasz-todo-site-${self:provider.stage}
     SIGNED_URL_EXPIRATION: 300
 
 functions:
@@ -50,6 +54,9 @@ functions:
           path: todos
           cors: true
           authorizer: Auth
+    deploymentSettings:
+      type: Linear10PercentEvery1Minute
+      alias: Live
     iamRoleStatements:
       - Effect: "Allow"
         Action:
@@ -76,6 +83,9 @@ functions:
             description: Create a new TODO item
             requestModels:
               'application/json': TodoCreateRequest
+    deploymentSettings:
+      type: Linear10PercentEvery1Minute
+      alias: Live
     iamRoleStatements:
       - Effect: "Allow"
         Action:
@@ -87,6 +97,11 @@ functions:
         Action:
           - dynamodb:PutItem
         Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.TODO_TABLE}
+      - Effect: Allow
+        Action:
+          codedeploy:*
+        Resource:
+          - '*'
       # - Effect: Allow
       #   Action:
       #     - s3:putObject
@@ -101,6 +116,9 @@ functions:
           path: todos/{todoId}
           cors: true
           authorizer: Auth
+    deploymentSettings:
+      type: Linear10PercentEvery1Minute
+      alias: Live
     iamRoleStatements:
       - Effect: "Allow"
         Action:
@@ -126,6 +144,9 @@ functions:
           path: todos/{todoId}
           cors: true
           authorizer: Auth
+    deploymentSettings:
+      type: Linear10PercentEvery1Minute
+      alias: Live
     iamRoleStatements:
       - Effect: "Allow"
         Action:
@@ -150,6 +171,9 @@ functions:
           path: todos/{todoId}/attachment
           cors: true
           authorizer: Auth
+    deploymentSettings:
+      type: Linear10PercentEvery1Minute
+      alias: Live
     iamRoleStatements:
       - Effect: "Allow"
         Action:
@@ -169,9 +193,9 @@ functions:
   ConnectHandler:
     handler: src/lambda/websocket/connect.handler
     events:
-    iamRoleStatements:
       - websocket:
           route: $connect
+    iamRoleStatements:
       - Effect: Allow
         Action:
           - dynamodb:Scan
@@ -185,6 +209,13 @@ functions:
     events:
       - websocket:
           route: $disconnect
+    iamRoleStatements:
+      - Effect: Allow
+        Action:
+          - dynamodb:Scan
+          - dynamodb:PutItem
+          - dynamodb:DeleteItem
+        Resource: arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.CONNECTIONS_TABLE}
     
 resources:
   Resources:

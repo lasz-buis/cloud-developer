@@ -12,10 +12,9 @@ plugins:
   - serverless-iam-roles-per-function
   - serverless-reqvalidator-plugin
   - serverless-webpack
-  # - serverless-s3-sync
+  - serverless-s3-sync
   # MONITORING SECTION
   - serverless-plugin-tracing
-
 # package:
 #   individually: true
 
@@ -26,6 +25,12 @@ provider:
   stage: ${opt:stage, 'dev'}
   region: ${opt:region, 'us-west-2'}
 
+  # CHAT API
+  websocketsApiName: udagram-chat-${self:provider.stage}
+  websocketsApiRouteSelectionExpression: $request.body.action
+  logs:
+    websocket: true
+  
   tracing:
     lambda: true
     apiGateway: true
@@ -33,12 +38,10 @@ provider:
   environment:
     PARTITION_KEY: userId
     SORT_KEY: todoId
-    INDEX_KEY: timestamp
-    INDEX_NAME: timestampIndex
     TODO_TABLE: lasz-todo-${self:provider.stage}
     CONNECTIONS_TABLE: Connections-${self:provider.stage}
     TODO_IMAGE_BUCKET: lasz-todo-images-${self:provider.stage}
-    # STATIC_HOST: lasz-todo-site-${self:provider.stage}
+    STATIC_HOST: lasz-todo-site-${self:provider.stage}
     SIGNED_URL_EXPIRATION: 300
 
 functions:
@@ -106,7 +109,6 @@ functions:
       #   Action:
       #     - s3:putObject
       #   Resource: arn:aws:s3:::${self:provider.environment.TODO_IMAGE_BUCKET}/*
-
 
   UpdateTodo:
     handler: src/lambda/http/updateTodo.handler
@@ -198,11 +200,8 @@ functions:
     iamRoleStatements:
       - Effect: Allow
         Action:
-          - dynamodb:Scan
           - dynamodb:PutItem
-          - dynamodb:DeleteItem
         Resource: arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.CONNECTIONS_TABLE}
-
 
   DisconnectHandler:
     handler: src/lambda/websocket/disconnect.handler
@@ -212,11 +211,38 @@ functions:
     iamRoleStatements:
       - Effect: Allow
         Action:
-          - dynamodb:Scan
-          - dynamodb:PutItem
           - dynamodb:DeleteItem
         Resource: arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.CONNECTIONS_TABLE}
     
+  DefaultHandler:
+    handler: src/lambda/websocket/default.handler
+    events:
+      - websocket:
+          route: $default
+  
+  # AliasHandler:
+  #   handler: src/lambda/websocket/alias.handler
+  #   events:
+  #     - websocket:
+  #         route: alias
+  
+  SendHandler:
+    handler: src/lambda/websocket/send.handler
+    events:
+      - websocket:
+          route: send
+    iamRoleStatements:
+      - Effect: Allow
+        Action:
+          - "execute-api:ManageConnections"
+        Resource:
+          - "arn:aws:execute-api:*:*:**/@connections/*"
+      - Effect: Allow
+        Action:
+          - dynamodb:Scan
+        Resource: arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.CONNECTIONS_TABLE}
+
+
 resources:
   Resources:
     GatewayResponseDefault4XX:
@@ -238,22 +264,22 @@ resources:
             AttributeType: S
           - AttributeName: ${self:provider.environment.SORT_KEY}
             AttributeType: S
-          - AttributeName: ${self:provider.environment.INDEX_KEY}
-            AttributeType: S
+          # - AttributeName: ${self:provider.environment.INDEX_KEY}
+          #   AttributeType: S
         KeySchema:
           - AttributeName: ${self:provider.environment.PARTITION_KEY}
             KeyType: HASH
           - AttributeName: ${self:provider.environment.SORT_KEY}
             KeyType: RANGE
-        LocalSecondaryIndexes:
-          - IndexName: ${self:provider.environment.INDEX_NAME}
-            KeySchema:
-              - AttributeName: ${self:provider.environment.PARTITION_KEY}
-                KeyType: HASH
-              - AttributeName: ${self:provider.environment.INDEX_KEY}
-                KeyType: RANGE
-            Projection:
-              ProjectionType: ALL # What attributes will be copied to an index
+        # LocalSecondaryIndexes:
+        #   - IndexName: ${self:provider.environment.INDEX_NAME}
+        #     KeySchema:
+        #       - AttributeName: ${self:provider.environment.PARTITION_KEY}
+        #         KeyType: HASH
+        #       - AttributeName: ${self:provider.environment.INDEX_KEY}
+        #         KeyType: RANGE
+        #     Projection:
+        #       ProjectionType: ALL # What attributes will be copied to an index
         BillingMode: PAY_PER_REQUEST
         TableName: ${self:provider.environment.TODO_TABLE}
 
@@ -261,12 +287,10 @@ resources:
       Type: AWS::DynamoDB::Table
       Properties:
         AttributeDefinitions:
-          -
-            AttributeName: id
+          - AttributeName: id
             AttributeType: S
         KeySchema:
-          -
-            AttributeName: id
+          - AttributeName: id
             KeyType: HASH
         BillingMode: PAY_PER_REQUEST
         TableName: ${self:provider.environment.CONNECTIONS_TABLE}
@@ -333,7 +357,6 @@ resources:
               Action:
               - s3:GetObject
               Resource: 'arn:aws:s3:::${self:provider.environment.STATIC_HOST}/*'
-
         Bucket: !Ref StaticSiteBucket
 
 
@@ -347,6 +370,8 @@ custom:
     port: 3003
 
   dynamodb:
+    stages:
+      - ${self:provider.stage}
     start:
       port: 8000
       inMemory: true

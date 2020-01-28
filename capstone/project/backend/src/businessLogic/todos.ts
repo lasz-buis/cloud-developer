@@ -44,7 +44,8 @@ export async function createTodoItem(
       name: createTodoRequest.name,
       dueDate: createTodoRequest.dueDate,
       done: false//,
-      // attachmentUrl: `https://${bucketName}.s3.amazonaws.com/${itemId}`
+      // attachmentUrl: `https://${bucketName}.s3.amazonaws.com/${itemId}`,
+      // timestamp: new Date().toISOString()
     });
   return item;
 }

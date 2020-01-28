@@ -219,7 +219,7 @@ resource "aws_lb_listener" "control_plane_api" {
 }
 
 resource "aws_lb_target_group_attachment" "control_plane_api" {
-  count            = 3
+  count            = 1
   target_group_arn = aws_lb_target_group.control_plane_api.arn
   target_id        = element(aws_instance.control_plane.*.id, count.index)
   port             = 6443

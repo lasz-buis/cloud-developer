@@ -6,7 +6,6 @@ import { createLogger } from '../../utils/logger'
 import Axios from 'axios'
 import { AxiosResponse } from 'axios'
 import { JWKS } from '../../auth/jwk'
-// import { Jwt } from '../../auth/Jwt'
 import { JwtPayload } from '../../auth/JwtPayload'
 
 const logger = createLogger('auth')

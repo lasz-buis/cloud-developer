@@ -1,29 +1,15 @@
 import { APIGatewayProxyHandler, APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda'
 import 'source-map-support/register'
-import * as AWS  from 'aws-sdk'
-
-const docClient = new AWS.DynamoDB.DocumentClient()
-
-const connectionsTable = process.env.CONNECTIONS_TABLE
+import { socket_connect } from '../../businessLogic/websocket'
 
 export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
-  console.log('Websocket connect', event)
-
-  const connectionId = event.requestContext.connectionId
-  const timestamp = new Date().toISOString()
-
+  console.log('Websocket connect', event);
+  const connectionId = event.requestContext.connectionId;
   const item = {
     id: connectionId,
-    timestamp
   }
-
-  console.log('Storing item: ', item)
-
-  await docClient.put({
-    TableName: connectionsTable,
-    Item: item
-  }).promise()
-
+  console.log('Storing item: ', item);
+  await socket_connect (connectionId);
   return {
     statusCode: 200,
     body: ''

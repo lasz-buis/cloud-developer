@@ -19,8 +19,8 @@ export class TodoAccess {
 
   constructor(
     private readonly docClient: DocumentClient = createDynamoDBClient(),
-    private readonly todoTable = process.env.TODO_TABLE) {
-  }
+    private readonly todoTable = process.env.TODO_TABLE/*,
+    private readonly connectionsTable = process.env.CONNECTIONS_TABLE*/) {}
 
   async getTodoList(userId: string): Promise<TodoItem[]> 
   {
@@ -145,7 +145,6 @@ export class TodoAccess {
     // {
     //   await this.deleteTodoItemAttachment (todoId);
     // }
-    logger.info('Deleting TODO item for current user');
     // Delete a specified item belonging to a specific user
     await this.docClient.delete (
       {
@@ -156,6 +155,38 @@ export class TodoAccess {
           "todoId": todoId
         }
       }).promise();
+  }
+
+  async websocket_create ()
+  {
+    
+  }
+
+  async database_create (TableName, Item)
+  {
+    logger.info('Deleting item from database');
+    await this.docClient.put({
+      TableName,
+      Item
+    }).promise()
+  }
+
+  async database_delete (TableName : string, Key)
+  {
+    await this.docClient.delete({
+      TableName,
+      Key
+    }).promise();
+  }
+
+  async database_scan (TableName: string)
+  {
+    const connections = await this.docClient.scan(
+    {
+       TableName: TableName,
+       ProjectionExpression: 'id'
+    }).promise();
+    return connections;
   }
 }
 

@@ -1,13 +1,12 @@
 import { APIGatewayProxyHandler, APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda'
 import 'source-map-support/register'
-// import { socket_connect } from '../../businessLogic/websocket'
+import { update_alias } from '../../businessLogic/websocket'
 
 export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
   console.log('Websocket alias', event);
-  // const connectionId = event.requestContext.connectionId;
-  // const item = {
-  //   id: connectionId
-  // }
+  const connectionId = event.requestContext.connectionId;
+  update_alias (connectionId, JSON.parse(event.body).alias);
+  
   return {
     statusCode: 200,
     body: ''

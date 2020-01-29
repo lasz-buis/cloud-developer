@@ -1,28 +1,37 @@
 import 'source-map-support/register'
-import { TodoAccess } from '../dataLayer/todoAccess'
+import { ChatAccess } from '../dataLayer/chatAccess'
 
-const connectionsTable = process.env.CONNECTIONS_TABLE;
-const todoAccess = new TodoAccess();
+const chatAccess = new ChatAccess();
 
 export async function socket_disconnect (connectionId : string)
 {
   const key = 
   {
-      id: connectionId
+    id: connectionId
   }
-  await todoAccess.database_delete(connectionsTable, key);
+  await chatAccess.database_delete(key);
 }
 
 export async function socket_connect (connectionId: string)
 {
   const item = 
   {
-      id: connectionId
+    id: connectionId
   }
-  await todoAccess.database_create(connectionsTable, item);
+  await chatAccess.database_create(item);
 }
 
 export async function socket_scan ()
 {
-  return todoAccess.database_scan (connectionsTable);
+  return chatAccess.database_scan ();
+}
+
+export async function update_alias (connectionId : string , alias : string)
+{
+  return chatAccess.updateChatAlias (connectionId, alias);
+}
+
+export async function update_topic (connectionId : string , topic : string)
+{
+  return chatAccess.updateChatTopic (connectionId, topic);
 }

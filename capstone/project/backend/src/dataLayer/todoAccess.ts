@@ -157,86 +157,86 @@ export class TodoAccess {
       }).promise();
   }
 
-  async websocket_create ()
-  {
+  // async websocket_create ()
+  // {
     
-  }
+  // }
 
-  async database_create (TableName, Item)
-  {
-    logger.info('Deleting item from database');
-    await this.docClient.put({
-      TableName,
-      Item
-    }).promise()
-  }
+  // async database_create (TableName, Item)
+  // {
+  //   logger.info('Deleting item from database');
+  //   await this.docClient.put({
+  //     TableName,
+  //     Item
+  //   }).promise()
+  // }
 
-  async database_delete (TableName : string, Key)
-  {
-    await this.docClient.delete({
-      TableName,
-      Key
-    }).promise();
-  }
+  // async database_delete (TableName : string, Key)
+  // {
+  //   await this.docClient.delete({
+  //     TableName,
+  //     Key
+  //   }).promise();
+  // }
 
-  async database_scan (TableName: string)
-  {
-    const connections = await this.docClient.scan(
-    {
-       TableName: TableName,
-       ProjectionExpression: 'id'
-    }).promise();
-    return connections;
-  }
+  // async database_scan (TableName: string)
+  // {
+  //   const connections = await this.docClient.scan(
+  //   {
+  //      TableName: TableName,
+  //      ProjectionExpression: 'id'
+  //   }).promise();
+  //   return connections;
+  // }
 
-  async updateChatAlias ( id: string,
-                          // topic: string,
-                          alias: string)
-  {
-    await this.docClient.update (
-    {
-      TableName: this.todoTable,
-      Key :
-      {
-        'id': id,
-        // 'topic': topic
-      },
-      UpdateExpression: 'set #alias = :a',
-      ExpressionAttributeNames:
-      {
-        '#alias' : 'alias',
-      },
-      ExpressionAttributeValues:
-      {
-        ':a': alias
-      },
-      ReturnValues:"UPDATED_NEW"
-    }).promise();
-  }
+  // async updateChatAlias ( id: string,
+  //                         // topic: string,
+  //                         alias: string)
+  // {
+  //   await this.docClient.update (
+  //   {
+  //     TableName: this.todoTable,
+  //     Key :
+  //     {
+  //       'id': id,
+  //       // 'topic': topic
+  //     },
+  //     UpdateExpression: 'set #alias = :a',
+  //     ExpressionAttributeNames:
+  //     {
+  //       '#alias' : 'alias',
+  //     },
+  //     ExpressionAttributeValues:
+  //     {
+  //       ':a': alias
+  //     },
+  //     ReturnValues:"UPDATED_NEW"
+  //   }).promise();
+  // }
 
-  async updateChatTopic ( id: string,
-                          topic: string)
-  {
-    await this.docClient.update (
-    {
-      TableName: this.todoTable,
-      Key :
-      {
-        'id': id,
-        // 'topic': topic
-      },
-      UpdateExpression: 'set #topic = :t',
-      ExpressionAttributeNames:
-      {
-        '#topic' : 'topic',
-      },
-      ExpressionAttributeValues:
-      {
-        ':t': topic
-      },
-      ReturnValues:"UPDATED_NEW"
-      }).promise();
-    }
+  // async updateChatTopic ( id: string,
+  //                         topic: string)
+  // {
+  //   await this.docClient.update (
+  //   {
+  //     TableName: this.todoTable,
+  //     Key :
+  //     {
+  //       'id': id,
+  //       // 'topic': topic
+  //     },
+  //     UpdateExpression: 'set #topic = :t',
+  //     ExpressionAttributeNames:
+  //     {
+  //       '#topic' : 'topic',
+  //     },
+  //     ExpressionAttributeValues:
+  //     {
+  //       ':t': topic
+  //     },
+  //     ReturnValues:"UPDATED_NEW"
+  //     }).promise();
+  //   }
 }
 
 

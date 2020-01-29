@@ -188,7 +188,59 @@ export class TodoAccess {
     }).promise();
     return connections;
   }
+
+  async updateChatAlias ( id: string,
+                          // topic: string,
+                          alias: string)
+  {
+    await this.docClient.update (
+    {
+      TableName: this.todoTable,
+      Key :
+      {
+        'id': id,
+        // 'topic': topic
+      },
+      UpdateExpression: 'set #alias = :a',
+      ExpressionAttributeNames:
+      {
+        '#alias' : 'alias',
+      },
+      ExpressionAttributeValues:
+      {
+        ':a': alias
+      },
+      ReturnValues:"UPDATED_NEW"
+    }).promise();
+  }
+
+  async updateChatTopic ( id: string,
+                          topic: string)
+  {
+    await this.docClient.update (
+    {
+      TableName: this.todoTable,
+      Key :
+      {
+        'id': id,
+        // 'topic': topic
+      },
+      UpdateExpression: 'set #topic = :t',
+      ExpressionAttributeNames:
+      {
+        '#topic' : 'topic',
+      },
+      ExpressionAttributeValues:
+      {
+        ':t': topic
+      },
+      ReturnValues:"UPDATED_NEW"
+      }).promise();
+    }
 }
+
+
+
 
 function createDynamoDBClient() {
   if (process.env.IS_OFFLINE) {
@@ -201,3 +253,4 @@ function createDynamoDBClient() {
 
   return new XAWS.DynamoDB.DocumentClient()
 }
+

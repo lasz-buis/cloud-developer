@@ -220,11 +220,28 @@ functions:
       - websocket:
           route: $default
   
-  # AliasHandler:
-  #   handler: src/lambda/websocket/alias.handler
-  #   events:
-  #     - websocket:
-  #         route: alias
+  AliasHandler:
+    handler: src/lambda/websocket/alias.handler
+    events:
+      - websocket:
+          route: alias
+    iamRoleStatements:
+      - Effect: Allow
+        Action:
+          - dynamodb:Update
+        Resource: arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.CONNECTIONS_TABLE}
+
+
+  TopicHandler:
+    handler: src/lambda/websocket/topic.handler
+    events:
+      - websocket:
+          route: topic
+    iamRoleStatements:
+      - Effect: Allow
+        Action:
+          - dynamodb:Update
+        Resource: arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.CONNECTIONS_TABLE}
   
   SendHandler:
     handler: src/lambda/websocket/send.handler
@@ -289,9 +306,13 @@ resources:
         AttributeDefinitions:
           - AttributeName: id
             AttributeType: S
+          # - AttributeName: topic
+          #   AttributeType: string
         KeySchema:
           - AttributeName: id
             KeyType: HASH
+          # - AttributeName: topic
+        #     KeyType: RANGE
         BillingMode: PAY_PER_REQUEST
         TableName: ${self:provider.environment.CONNECTIONS_TABLE}
 

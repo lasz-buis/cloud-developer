@@ -1,81 +1,141 @@
+# apiVersion: apps/v1
+# kind: Deployment
+# metadata:
+#   creationTimestamp: null
+#   labels:
+#     service: backend-user
+#   name: backend-user
+# spec:
+#   progressDeadlineSeconds: 2147483647
+#   replicas: 1
+#   revisionHistoryLimit: 2147483647
+#   selector:
+#     matchLabels:
+#       service: backend-user
+#   strategy:
+#     rollingUpdate:
+#       maxSurge: 1
+#       maxUnavailable: 1
+#     type: RollingUpdate
+#   template:
+#     metadata:
+#       creationTimestamp: null
+#       labels:
+#         service: backend-user
+#     spec:
+#       containers:
+#       - env:
+#         - name: URL
+#           valueFrom:
+#             configMapKeyRef:
+#               key: URL
+#               name: env-config
+#         - name: JWT_SECRET
+#           valueFrom:
+#             configMapKeyRef:
+#               key: JWT_SECRET
+#               name: env-config
+#         - name: POSTGRESS_DATABASE
+#           valueFrom:
+#             configMapKeyRef:
+#               key: POSTGRESS_DATABASE
+#               name: env-config
+#         - name: POSTGRESS_HOST
+#           valueFrom:
+#             configMapKeyRef:
+#               key: POSTGRESS_HOST
+#               name: env-config
+#         - name: POSTGRESS_PASSWORD
+#           valueFrom:
+#             secretKeyRef:
+#               key: POSTGRESS_PASSWORD
+#               name: env-secret
+#         - name: POSTGRESS_USERNAME
+#           valueFrom:
+#             secretKeyRef:
+#               key: POSTGRESS_USERNAME
+#               name: env-secret
+#         image: lasz/udacity-restapi-user
+#         imagePullPolicy: Always
+#         name: backend-user
+#         resources:
+#           limits:
+#             cpu: 500m
+#             memory: 1Gi
+#           requests:
+#             cpu: 250m
+#             memory: 64Mi
+#         terminationMessagePath: /dev/termination-log
+#         terminationMessagePolicy: File
+#         readinessProbe:
+#           httpGet:
+#              path: /
+#              port: 8080
+#              initialDelaySeconds: 5
+#              periodSeconds: 5
+#              successThreshold: 1
+#       dnsPolicy: ClusterFirst
+#       restartPolicy: Always
+#       schedulerName: default-scheduler
+#       securityContext: {}
+#       terminationGracePeriodSeconds: 30
+
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  creationTimestamp: null
   labels:
     service: backend-user
   name: backend-user
 spec:
-  progressDeadlineSeconds: 2147483647
-  replicas: 1
-  revisionHistoryLimit: 2147483647
   selector:
     matchLabels:
       service: backend-user
-  strategy:
-    rollingUpdate:
-      maxSurge: 1
-      maxUnavailable: 1
-    type: RollingUpdate
+  replicas: 1
   template:
     metadata:
-      creationTimestamp: null
       labels:
         service: backend-user
     spec:
       containers:
-      - env:
+      - image: lasz/udacity-restapi-user:v0.1.0
+        name: backend-user 
+        imagePullPolicy: Always  
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "250m"
+          limits:
+            memory: "1024Mi"
+            cpu: "500m"      
+        env:
         - name: URL
           valueFrom:
             configMapKeyRef:
-              key: URL
               name: env-config
+              key: URL 
         - name: JWT_SECRET
           valueFrom:
             configMapKeyRef:
-              key: JWT_SECRET
               name: env-config
+              key: JWT_SECRET
         - name: POSTGRESS_DATABASE
           valueFrom:
             configMapKeyRef:
-              key: POSTGRESS_DATABASE
               name: env-config
+              key: POSTGRESS_DATABASE
         - name: POSTGRESS_HOST
           valueFrom:
             configMapKeyRef:
-              key: POSTGRESS_HOST
               name: env-config
+              key: POSTGRESS_HOST
         - name: POSTGRESS_PASSWORD
           valueFrom:
             secretKeyRef:
-              key: POSTGRESS_PASSWORD
               name: env-secret
+              key: POSTGRESS_PASSWORD
         - name: POSTGRESS_USERNAME
           valueFrom:
             secretKeyRef:
-              key: POSTGRESS_USERNAME
               name: env-secret
-        image: lasz/udacity-restapi-user
-        imagePullPolicy: Always
-        name: backend-user
-        resources:
-          limits:
-            cpu: 500m
-            memory: 1Gi
-          requests:
-            cpu: 250m
-            memory: 64Mi
-        terminationMessagePath: /dev/termination-log
-        terminationMessagePolicy: File
-        readinessProbe:
-          httpGet:
-             path: /
-             port: 8080
-             initialDelaySeconds: 5
-             periodSeconds: 5
-             successThreshold: 1
-      dnsPolicy: ClusterFirst
+              key: POSTGRESS_USERNAME
       restartPolicy: Always
-      schedulerName: default-scheduler
-      securityContext: {}
-      terminationGracePeriodSeconds: 30

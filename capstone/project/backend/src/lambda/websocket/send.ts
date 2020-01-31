@@ -1,59 +1,75 @@
 import 'source-map-support/register'
 import { socket_disconnect } from '../../businessLogic/websocket'
 import { socket_scan } from '../../businessLogic/websocket'
-import * as AWS  from 'aws-sdk'
 import { APIGatewayProxyHandler, APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda'
+import { BroadcastPayload } from '../../models/broadcast_payload'
+
+//
+import * as AWS  from 'aws-sdk'
 import { DocumentClient } from 'aws-sdk/clients/dynamodb'
 const docClient: DocumentClient = new AWS.DynamoDB.DocumentClient();
-
+import { UnicastPayload } from '../../models/unicast_payload'
 const domain = 'wss://3t5d4gcuz4.execute-api.us-west-2.amazonaws.com';
 const stage = 'dev'
-// const domain = event.requestContext.domainName;
-// const stage = event.requestContext.stage;
 const connectionParams = 
 {
     apiVersion: "2018-11-29",
     endpoint: `${domain}/${stage}`
 }
-
 const apiGateway = new AWS.ApiGatewayManagementApi(connectionParams);
 const connectionsTable = process.env.CONNECTIONS_TABLE;
+//
+
 
 export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => 
 {
 	console.log("Endpoint :" + `${domain}/${stage}`);
 	const senderId : string = event.requestContext.connectionId;
-	const senderAlias : string = await getAlias(senderId);
+	
 	const message = JSON.parse(event.body).data;
-	await broadcast ({senderAlias , message});
+	await broadcast ({senderId , message});
 	return {
 		statusCode: 200,
 		body: ''
   	}
 }
 
-async function broadcast (payload)
+async function broadcast (broadcast_payload : BroadcastPayload)
 {
-    console.log ("Scanning all connections");
-    const connections = await socket_scan();
-    console.log("SCAN RESULTS: " + JSON.stringify (connections))
-    console.log ("Broadcasting");
-    for (const connection of connections.Items) 
+  console.log ("Scanning all connections");
+  const connections = await socket_scan();
+  console.log("SCAN RESULTS: " + JSON.stringify (connections))
+  console.log ("Broadcasting");
+  const senderId : string = broadcast_payload.senderId;
+  const message : string = broadcast_payload.message
+  for (const connection of connections.Items) 
+  {
+    const receiverId : string = connection.id;
+    const unicast_payload : UnicastPayload = 
     {
-        const receiverId : string = connection.id;
-        await send(receiverId, payload);
+      senderId,
+      receiverId,
+      message
     }
+    await send (unicast_payload);
+  }
 }
 
-async function send (receiverId : string, payload: any) 
+async function send (payload : UnicastPayload)
 {
   try
   {
-    console.log('Sending message to a connection', receiverId);
+    console.log ("SEND Payload: " + JSON.stringify(payload));
+    const senderAlias : string = await getAlias(payload.senderId);
+    const receiverAlias : string = await getAlias(payload.receiverId); 
+    if (senderAlias && receiverAlias)
+    {
+      console.log(senderAlias + '=>'+ receiverAlias);
+    }
     await apiGateway.postToConnection(
     {
-      ConnectionId: receiverId,
-      Data: payload.senderAlias + ' : ' + payload.message,
+      ConnectionId: payload.receiverId,
+      Data: senderAlias + ' : ' + payload.message,
     }).promise();
   } 
   catch (e)
@@ -62,23 +78,23 @@ async function send (receiverId : string, payload: any)
     if (e.statusCode === 410) 
     {
       console.log('Stale connection')
-      await socket_disconnect (receiverId);
+      await socket_disconnect (payload.receiverId);
     }
   }
 }
 
-async function getAlias (senderId : string) 
+async function getAlias (connectionId : string) : Promise <string>
 {
 	const result = await docClient.query(
 	{
-        TableName: connectionsTable,
-        KeyConditionExpression: 'id = :id',
-        ExpressionAttributeValues: 
-        {
-          ':id': senderId
-        }
-    }).promise();
-	const alias = result.Items[0];
-	console.log ('Items Returned from database' + alias);
-	return senderId;
+    TableName: connectionsTable,
+    KeyConditionExpression: 'id = :id',
+    ExpressionAttributeValues: 
+    {
+      ':id': connectionId
+    }
+  }).promise();
+	const alias : string = result.Items[0].alias;
+	console.log ('Alias Returned from database :' + alias);
+	return alias;
 }

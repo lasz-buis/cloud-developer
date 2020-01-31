@@ -256,6 +256,7 @@ functions:
           - "arn:aws:execute-api:*:*:**/@connections/*"
       - Effect: Allow
         Action:
+          - dynamodb:Query
           - dynamodb:Scan
         Resource: arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.CONNECTIONS_TABLE}
 

@@ -8,20 +8,12 @@ import * as AWSXRay from 'aws-xray-sdk'
 import { DocumentClient } from 'aws-sdk/clients/dynamodb'
 
 const XAWS = AWSXRay.captureAWS(AWS);
-const domain = 'wss://3t5d4gcuz4.execute-api.us-west-2.amazonaws.com';
-const stage = 'dev'
-const connectionParams = 
-{
-    apiVersion: "2018-11-29",
-    endpoint: `${domain}/${stage}`
-}
 
 export class ChatAccess 
 {
     constructor(
         private readonly docClient: DocumentClient = createDynamoDBClient(),
-        private readonly connectionsTable = process.env.CONNECTIONS_TABLE,
-        private apiGateway = new XAWS.ApiGatewayManagementApi(connectionParams)) {}
+        private readonly connectionsTable = process.env.CONNECTIONS_TABLE) {}
 
     async websocket_create ()  
     {
@@ -99,24 +91,32 @@ export class ChatAccess
         return result;
     }
     
-    async send (connectionId : string, data : string)
+    async send (endpoint, receiverId, payload)
     {
-        await this.apiGateway.postToConnection(
+        console.log ('DATA LAYER: send called');
+        const connectionParams = 
         {
-            ConnectionId: connectionId,
-            Data: data,
+            apiVersion: "2018-11-29",
+            endpoint: endpoint
+        }
+        const apiGateway = new AWS.ApiGatewayManagementApi(connectionParams);
+        await apiGateway.postToConnection(
+        {
+            ConnectionId: receiverId,
+            Data: payload,
         }).promise();
     }
-    
+
     async queryAlias (connectionId : string) : Promise <string>
     {
+        console.log ('DATA LAYER: queryAlias called');
         const result = await this.docClient.query(
         {
             TableName: this.connectionsTable,
             KeyConditionExpression: 'id = :id',
             ExpressionAttributeValues: 
             {
-            ':id': connectionId
+                ':id': connectionId
             }
         }).promise();
         const alias : string = result.Items[0].alias;
@@ -124,8 +124,39 @@ export class ChatAccess
         return alias;
     }
 
+    async getTopicForId (connectionId : string) : Promise <string>
+    {
+        console.log ('DATA LAYER: getTopicForId called');
+        const result = await this.docClient.query(
+            {
+                TableName: this.connectionsTable,
+                KeyConditionExpression: 'id = :id',
+                ExpressionAttributeValues: 
+                {
+                    ':id': connectionId
+                }
+            }).promise();
+        const topic : string = result.Items[0].topic;
+        console.log (result.Items[0]);
+        return topic; 
+    }
 
-
+    async queryTopic (connectionId: string , topic : string)
+    {
+        console.log ('DATA LAYER: queryTopic called');
+        const topic_set = await this.docClient.query(
+        {
+            TableName: this.connectionsTable,
+            KeyConditionExpression: 'id = :id',
+            ExpressionAttributeValues: 
+            {
+                ':id': connectionId,
+                ':topic': topic
+            }
+        }).promise();
+        console.log ('TOPIC SET: ' + topic_set);
+        return topic_set;
+    }
 }
 
 function createDynamoDBClient() {

@@ -44,8 +44,9 @@ provider:
     STATIC_HOST: lasz-todo-site-${self:provider.stage}
     SIGNED_URL_EXPIRATION: 300
 
+# FUNCTIONS SECTION
 functions:
-
+  # TODO SECTION
   Auth:
     handler: src/lambda/auth/auth0Authorizer.handler
 
@@ -71,6 +72,11 @@ functions:
         Action:
           - dynamodb:Query
         Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.TODO_TABLE}
+      - Effect: Allow
+        Action:
+          codedeploy:*
+        Resource:
+          - '*'
 
   CreateTodo:
     handler: src/lambda/http/createTodo.handler
@@ -132,6 +138,11 @@ functions:
         Action:
           - dynamodb:UpdateItem
         Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.TODO_TABLE}
+      - Effect: Allow
+        Action:
+          codedeploy:*
+        Resource:
+          - '*'
       # - Effect: Allow
       #   Action:
       #     - s3:PutObject
@@ -164,6 +175,11 @@ functions:
         Action:
           - s3:DeleteObject
         Resource: arn:aws:s3:::${self:provider.environment.TODO_IMAGE_BUCKET}/*
+      - Effect: Allow
+        Action:
+          codedeploy:*
+        Resource:
+          - '*'
   
   GenerateUploadUrl:
     handler: src/lambda/http/generateUploadUrl.handler
@@ -191,7 +207,13 @@ functions:
         Action:
           - dynamodb:UpdateItem
         Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.TODO_TABLE}
+      - Effect: Allow
+        Action:
+          codedeploy:*
+        Resource:
+          - '*'
 
+  # WEB CHAT SECTION
   ConnectHandler:
     handler: src/lambda/websocket/connect.handler
     events:
@@ -231,7 +253,6 @@ functions:
           - dynamodb:UpdateItem
         Resource: arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.CONNECTIONS_TABLE}
 
-
   TopicHandler:
     handler: src/lambda/websocket/topic.handler
     events:
@@ -260,7 +281,7 @@ functions:
           - dynamodb:Scan
         Resource: arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.CONNECTIONS_TABLE}
 
-
+# FUNCTIONS SECTIONS
 resources:
   Resources:
     GatewayResponseDefault4XX:
@@ -383,14 +404,14 @@ resources:
 
 
 custom:
-
+  # S3 WEBHOST UPLOAD DIRECTORY
   s3Sync:
     - bucketName: ${self:provider.environment.STATIC_HOST}
       localDir: static
-
+  # OFFLINE TESTING
   serverless-offline:
     port: 3003
-
+    
   dynamodb:
     stages:
       - ${self:provider.stage}

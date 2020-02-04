@@ -2,10 +2,13 @@ import { APIGatewayProxyHandler, APIGatewayProxyEvent, APIGatewayProxyResult } f
 import 'source-map-support/register'
 import { socket_connect } from '../../businessLogic/websocket'
 
-export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
+export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => 
+{
+  // handle "connect" route from websocket API
   console.log('Websocket connect', event);
   const connectionId = event.requestContext.connectionId;
-  const item = {
+  const item = 
+  {
     id: connectionId,
   }
   console.log('Storing item: ', item);

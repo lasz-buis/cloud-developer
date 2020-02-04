@@ -1,0 +1,22 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "title": "unicast-payload",
+    "type":"object",
+    "properties": {
+        "senderId":{
+            "type":"string"
+        },
+        "receiverId": {
+            "type": "string"
+        },
+        "message":{
+            "type": "string"
+        }
+    },
+    "required":[
+        "senderId",
+        "receiverId",
+        "message"
+    ],
+    "additionalProperties": false
+}

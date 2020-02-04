@@ -2,7 +2,7 @@
 ## OPTION 2 : Serverless Udagram
 This project is an extension of the serverless model (option 2).
 In the serverless model, a TODO program has been implemented 
-at an [endpoint](https://zbuja44doa.execute-api.us-west-2.amazonaws.com/dev).
+at an [endpoint](https://0zvjjaczl8.execute-api.us-west-2.amazonaws.com/dev).
 The following criteria have been addressed:
 
 ### FUNCTIONALITY
@@ -27,14 +27,13 @@ The following criteria have been addressed:
 * Scan operation is not used
 
 ## UDAGRAM CHAT
-The functionality of the project has been extened by encorporating a  basic websocket chat application found at wss endpoint: (wss://3t5d4gcuz4.execute-api.us-west-2.amazonaws.com/dev)
-The front-end HTML file can be found in capstone/project/static
+The functionality of the project has been extened by encorporating a  basic websocket chat application found at wss endpoint: (wss://pepbtca1zj.execute-api.us-west-2.amazonaws.com/dev)
+The front-end HTML can be found in [capstone/project/backend/static](./backend/static/index.html)
 
 ### FUNCTIONALITY
 * Users are able to connect to a wss endpoint via the html front-end
 * Users are represented in a DynamoDB table by their ID, Alias and Topic
 * DynamoDB items can be queried, updated, scanned and deleted
-* Only users in a topic can see messages bound for that topic
 * The sending user's alias is displayed along with their message
 * Serverless spins up an Amazon S3 webhost and upload client-side files
 

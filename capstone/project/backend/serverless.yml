@@ -279,6 +279,7 @@ functions:
         Action:
           - dynamodb:Query
           - dynamodb:Scan
+          - dynamodb:DeleteItem
         Resource: arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.CONNECTIONS_TABLE}
 
 # FUNCTIONS SECTIONS

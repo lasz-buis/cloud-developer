@@ -141,7 +141,7 @@ export class ChatAccess
         return topic; 
     }
 
-    async queryTopic (connectionId: string , topic : string)
+    async queryTopic (/*connectionId: string , */topic : string)
     {
         console.log ('DATA LAYER: queryTopic called');
         const topic_set = await this.docClient.query(
@@ -150,7 +150,7 @@ export class ChatAccess
             KeyConditionExpression: 'id = :id',
             ExpressionAttributeValues: 
             {
-                ':id': connectionId,
+                // ':id': connectionId,
                 ':topic': topic
             }
         }).promise();

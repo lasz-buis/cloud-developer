@@ -1,0 +1,18 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "title": "broadcast-payload",
+    "type":"object",
+    "properties": {
+        "senderId":{
+            "type":"string"
+        },
+        "message":{
+            "type": "string"
+        }
+    },
+    "required":[
+        "senderId",
+        "message"
+    ],
+    "additionalProperties": false
+}

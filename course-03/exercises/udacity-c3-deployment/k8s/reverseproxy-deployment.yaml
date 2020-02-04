@@ -72,15 +72,8 @@ spec:
         service: reverseproxy
     spec:
       containers:
-<<<<<<< HEAD
       - image: lasz/reverseproxy
-<<<<<<< HEAD
-=======
-        imagePullPolicy: Always
->>>>>>> release/1.0.2
-=======
       - image: lasz/reverseproxy:v0.1.0
->>>>>>> release/1.0.3
         name: reverseproxy
         imagePullPolicy: Always          
         resources:

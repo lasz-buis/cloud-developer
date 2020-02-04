@@ -121,12 +121,7 @@ spec:
         service: backend-feed
     spec:
       containers:
-<<<<<<< HEAD
-<<<<<<< HEAD
-      - image: lasz/udacity-restapi-feed
-=======
       - image: lasz/udacity-restapi-feed:v0.1.0
->>>>>>> release/1.0.3
         name: backend-feed
         imagePullPolicy: Always  
         resources:
@@ -137,12 +132,6 @@ spec:
             memory: "1024Mi"
             cpu: "500m"                  
         env:
-<<<<<<< HEAD
-=======
-      - env:
->>>>>>> release/1.0.2
-=======
->>>>>>> release/1.0.3
         - name: URL
           valueFrom:
             configMapKeyRef:

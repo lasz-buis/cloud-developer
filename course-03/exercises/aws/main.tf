@@ -16,6 +16,11 @@ limitations under the License.
 
 provider "aws" {
   region = var.aws_region
+  profile = "default"
+  # shared_credentials_file = "~/.aws/credentials"
+  access_key = "ASIAWII4GNXSF3N2XEFV"
+  secret_key = "8rj9aNITVzPTiWnAgWXLEFy3KbVq0hmQL8ka959C"
+  token = "FwoGZXIvYXdzENf//////////wEaDAp4cDG3pbW8wO+7+iLBAZXRvq7PDAd7ZEakl823OEGWGDvoEZRscopuyVUpdNqMIlROF6kCTvjCMxmBOSdtpW2aV7IlFEAF9/tgh5lcHEdkIUa6ECIQjrrRlGeYmhdwqO3aNNttIJbdO1/n6jbZ4rZ9ijNs2CJfDFZxCjZT+iuxxJNImWnxmPIIN1dIcXRTrnHWeIZIYo5NtCLvAmxEeRAGhFkL4P6wDtfBsQ/bNADHD5FDqVAZNG7irX5djlH3zS/58z6+XlYxssvRGrXqVekoku6r8QUyLUNMXSUew0NwT+gxBReBbbzjNJLhAMqKUjfic7N7t3YFYXeA5aicb7GcUDDfQw=="
 }
 
 locals {
@@ -29,6 +34,7 @@ locals {
   ami = var.ami == "" ? data.aws_ami.ubuntu.id : var.ami
 }
 
+################################# DATA SOURCES #################################
 data "aws_availability_zones" "available" {
 }
 
@@ -67,17 +73,22 @@ data "aws_subnet" "az_c" {
   vpc_id            = local.vpc_id
 }
 
+############################### NETWORKING SETUP ###############################
+
 locals {
-  all_subnets = [data.aws_subnet.az_a.id, data.aws_subnet.az_b.id, data.aws_subnet.az_c.id]
+  all_subnets = [data.aws_subnet.az_a.id, 
+                 data.aws_subnet.az_b.id, 
+                 data.aws_subnet.az_c.id]
 }
 
-resource "aws_default_vpc" "default" {
-}
+resource "aws_default_vpc" "default" {}
 
 resource "aws_key_pair" "deployer" {
   key_name   = "${var.cluster_name}-deployer-key"
   public_key = file(var.ssh_public_key_file)
 }
+
+################################### FIREWALL ###################################
 
 resource "aws_security_group" "common" {
   name        = "${var.cluster_name}-common"
@@ -122,6 +133,8 @@ resource "aws_security_group" "control_plane" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 }
+
+##################################### IAM ######################################
 
 resource "aws_iam_role" "role" {
   name = "${var.cluster_name}-host"
@@ -173,13 +186,18 @@ EOF
 
 }
 
+################################## KUBE-API LB #################################
+
 resource "aws_lb" "control_plane" {
   name               = "${var.cluster_name}-api-lb"
   internal           = false
   load_balancer_type = "network"
   subnets            = local.all_subnets
 
-  tags = map("Cluster", var.cluster_name, local.kube_cluster_tag, "shared")
+  tags = map("Cluster", 
+              var.cluster_name, 
+              local.kube_cluster_tag, 
+              "shared")
 }
 
 resource "aws_lb_target_group" "control_plane_api" {
@@ -201,14 +219,16 @@ resource "aws_lb_listener" "control_plane_api" {
 }
 
 resource "aws_lb_target_group_attachment" "control_plane_api" {
-  count            = 3
+  count            = 1
   target_group_arn = aws_lb_target_group.control_plane_api.arn
   target_id        = element(aws_instance.control_plane.*.id, count.index)
   port             = 6443
 }
 
+############################ CONTROL PLANE INSTANCES ###########################
+
 resource "aws_instance" "control_plane" {
-  count = 3
+  count = 1
 
   tags = map("Name", "${var.cluster_name}-control_plane-${count.index + 1}", local.kube_cluster_tag, "shared")
 
@@ -220,7 +240,7 @@ resource "aws_instance" "control_plane" {
   availability_zone      = data.aws_availability_zones.available.names[count.index % local.az_count]
   subnet_id              = local.all_subnets[count.index % local.az_count]
 
-  ebs_optimized = true
+  ebs_optimized = false
 
   root_block_device {
     volume_type = "gp2"

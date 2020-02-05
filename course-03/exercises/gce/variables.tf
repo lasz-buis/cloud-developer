@@ -65,7 +65,8 @@ variable "region" {
 }
 
 variable "control_plane_target_pool_members_count" {
-  default = 3
+  # default = 3
+  default = 1
 }
 
 variable "control_plane_type" {

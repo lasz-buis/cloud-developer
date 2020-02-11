@@ -10,48 +10,71 @@ const router: Router = Router();
 
 export function requireAuth(req: Request, res: Response, next: NextFunction) 
 {
-    if (!req.headers || !req.headers.authorization){
+    console.log ('[DEBUG] : requireAuth() Enetered');
+    if (!req.headers || !req.headers.authorization)
+    {
+        console.log ('[DEBUG] : No authorization headers');
         return res.status(401).send({ message: 'No authorization headers.' });
     }
     
 
     const token_bearer = req.headers.authorization.split(' ');
-    if(token_bearer.length != 2){
+    if(token_bearer.length != 2)
+    {
+        console.log ('[DEBUG] : Malformed token');
         return res.status(401).send({ message: 'Malformed token.' });
     }
     
     const token = token_bearer[1];
 
-    return jwt.verify(token, config.jwt.secret, (err, decoded) => {
-      if (err) {
-        return res.status(500).send({ auth: false, message: 'Failed to authenticate.' });
-      }
-      return next();
+    return jwt.verify(token, config.jwt.secret, (err, decoded) => 
+    {
+        console.log ('[DEBUG] : Varifying token');
+        if (err) 
+        {
+            console.log ('[DEBUG] : Failed to authenticate');
+            return res.status(500).send({ auth: false, message: 'Failed to authenticate.' });
+        }
+        return next();
     });
 }
 
 // Get all feed items 
 router.get('/', async (req: Request, res: Response) => {
     console.log ("[DEBUG] Get all feed items");
-    const items = await FeedItem.findAndCountAll({order: [['id', 'DESC']]});
-    items.rows.map((item) => {
-            if(item.url) {
-                item.url = AWS.getGetSignedUrl(item.url);
+    try
+    {
+        console.log ('[DEBUG] : Finding Items');
+        const items = await FeedItem.findAndCountAll(
+        {
+            order: [['id', 'DESC']]
+        });
+        console.log ('[DEBUG] : Mapping items');
+        items.rows.map((item) => 
+        {
+            if(item.url) 
+            {
+                console.log ('[DEBUG] : Item URL found');
+                try
+                {
+                    console.log ('[DEBUG] : Getting signed URL');
+                    item.url = AWS.getGetSignedUrl(item.url);
+                }
+                catch (e)
+                {
+                    console.log ('[DEBUG] : Could not get signed URL : ' + e);
+                }
             }
-    });
-    res.send(items);
+        });
+        console.log ('[DEBUG] : Sending Items to feed');
+        res.send(items);
+    }
+    catch (e)
+    {
+        console.log ('Could not retrieve feed items due to error : ' + e);
+    }
 });
 
-<<<<<<< HEAD
-//@TODO
-//Add an endpoint to GET a specific resource by Primary Key
-router.get ('/:id', async (req: Request, res: Response)=>
-{
-    const id = req.params.id;
-    if (!id)
-    {
-        res.status(400).send('ID param required');
-=======
 // Get a specific resource
 router.get('/:id', 
     async (req: Request, res: Response) => {
@@ -60,7 +83,6 @@ router.get('/:id',
     if (!id)
     {
         res.status(400).send ("id is required");
->>>>>>> release/1.0.2
     }
     else
     {
@@ -71,6 +93,7 @@ router.get('/:id',
             })
            .catch (err=>
             {
+                console.log ('Could not find Item by ID due to error : ' + err);
                 res.status (400).send (err);
             });
         }
@@ -114,9 +137,10 @@ router.patch('/:id',
                     res.status(200).send('Item Updated');
                 })
                .catch(err=>
-                    {
-                        res.status(400).send(err);
-                    });
+                {
+                    console.log ('Could not update item due to error : ' + err);
+                    res.status(400).send(err);
+                });
 });
 
 

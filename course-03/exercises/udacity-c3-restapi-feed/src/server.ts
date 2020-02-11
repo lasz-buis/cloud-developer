@@ -10,19 +10,6 @@ import { V0MODELS } from './controllers/v0/model.index';
 const c = config.dev;
 
 (async () => {
-<<<<<<< HEAD
-  await sequelize.addModels(V0MODELS);
-  await sequelize.sync()
-  .then (() =>
-  {
-    console.log ('sequelize synched')
-  })
-  .catch(err =>
-  {
-    console.log ('ERROR: ' + err);
-  });
-
-=======
   try
   {
     await sequelize.addModels(V0MODELS);
@@ -33,7 +20,6 @@ const c = config.dev;
     console.log ("[DEBUG] Cannot connect to database");
     console.log (err);
   }
->>>>>>> release/1.0.2
   const app = express();
   const port = process.env.PORT || 8080; // default port to listen
   

@@ -17,9 +17,9 @@ router.get('/:id', async (req: Request, res: Response) => {
         res.status(400).send("user id required");
     }
     const item = await User.findByPk(id).catch (err=>
-        {
-            console.log ("Error : " + err);
-        });
+    {
+        console.log ("Error : " + err);
+    });
     if (!item)
     {
         res.status(400).send("user not found");

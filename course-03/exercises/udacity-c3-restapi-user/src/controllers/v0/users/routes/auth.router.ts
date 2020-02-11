@@ -12,12 +12,7 @@ import { config } from '../../../../config/config';
 const router: Router = Router();
 
 async function generatePassword(plainTextPassword: string): Promise<string> {
-<<<<<<< HEAD
-    //@TODO Use Bcrypt to Generated Salted Hashed Passwords
-    const salt_rounds = 10;
-    const salt = await bcrypt.genSalt (salt_rounds);
-    const hash = await bcrypt.hash (plainTextPassword,salt);
-=======
+
     const saltRounds = 10;
     var hash : string ;
     try 
@@ -29,7 +24,6 @@ async function generatePassword(plainTextPassword: string): Promise<string> {
     {
         console.log ("bcrypt Error : " + err);
     }
->>>>>>> release/1.0.2
     return hash;
 }
 

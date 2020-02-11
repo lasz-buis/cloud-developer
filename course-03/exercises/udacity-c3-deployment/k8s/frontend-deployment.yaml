@@ -1,3 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    service: frontend
+  name: frontend
+spec:
+  selector:
+    matchLabels:
+      service: frontend
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        service: frontend
+        api: external        
+    spec:
+      containers:
+      - image: lasz/udacity-frontend:v0.1.0
+        name: frontend
+        imagePullPolicy: Always          
+        ports:
+        - containerPort: 80
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "250m"
+          limits:
+            memory: "512Mi"
+            cpu: "250m"                
+      restartPolicy: Always
+
 # apiVersion: apps/v1
 # kind: Deployment
 # metadata:
@@ -53,35 +85,3 @@
 #       schedulerName: default-scheduler
 #       securityContext: {}
 #       terminationGracePeriodSeconds: 30
-
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  labels:
-    service: frontend
-  name: frontend
-spec:
-  selector:
-    matchLabels:
-      service: frontend
-  replicas: 1
-  template:
-    metadata:
-      labels:
-        service: frontend
-        api: external        
-    spec:
-      containers:
-      - image: lasz/udacity-frontend:v0.1.0
-        name: frontend
-        imagePullPolicy: Always          
-        ports:
-        - containerPort: 80
-        resources:
-          requests:
-            memory: "64Mi"
-            cpu: "250m"
-          limits:
-            memory: "1024Mi"
-            cpu: "500m"                
-      restartPolicy: Always

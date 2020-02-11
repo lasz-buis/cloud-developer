@@ -10,21 +10,7 @@ import { V0MODELS } from './controllers/v0/model.index';
 const c = config.dev;
 
 (async () => {
-<<<<<<< HEAD
 
-  console.log (config.dev);
-  await sequelize.addModels(V0MODELS);
-  await sequelize.sync()
-    .then(()=>
-      {
-        console.log("Sync Success");
-      })
-    .catch (err => 
-      {
-        console.log ('Error:' + err);
-      });
-
-=======
   try
   {
     await sequelize.addModels(V0MODELS);
@@ -34,7 +20,6 @@ const c = config.dev;
   {
     console.log ("Sequelize Error : " + err);
   }
->>>>>>> release/1.0.2
   const app = express();
   const port = process.env.PORT || 8080; // default port to listen
   

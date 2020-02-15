@@ -6,13 +6,9 @@ metadata:
   name: reverseproxy
 spec:
   type: LoadBalancer   
-  # type: NodePort
   selector:
     service: reverseproxy
   ports:
   - name: "8080"
     port: 8080
     targetPort: 8080
-  # - name: "postgres"
-  #   port: 5432
-  #   targetPort: 5432

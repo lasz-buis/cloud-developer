@@ -1,18 +1,14 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  creationTimestamp: null
   labels:
     service: frontend
-  name: frontend-a
+  name: frontend
 spec:
-  progressDeadlineSeconds: 2147483647
-  replicas: 2
-  revisionHistoryLimit: 2147483647
   selector:
     matchLabels:
-      api: external
       service: frontend
+  replicas: 1
   strategy:
     rollingUpdate:
       maxSurge: 1
@@ -20,36 +16,28 @@ spec:
     type: RollingUpdate
   template:
     metadata:
-      creationTimestamp: null
       labels:
-        api: external
         service: frontend
+        api: external        
     spec:
       containers:
-      - image: lasz/udacity-frontend
-        imagePullPolicy: Always
+      - image: lasz/udacity-frontend:v0.1.1
         name: frontend
+        imagePullPolicy: Always          
         ports:
         - containerPort: 80
-          protocol: TCP
-        resources:
-          limits:
-            cpu: 500m
-            memory: 1Gi
-          requests:
-            cpu: 250m
-            memory: 64Mi
-        terminationMessagePath: /dev/termination-log
-        terminationMessagePolicy: File
         readinessProbe:
           httpGet:
-             path: /
-             port: 8080
-             initialDelaySeconds: 5
-             periodSeconds: 5
-             successThreshold: 1
-      dnsPolicy: ClusterFirst
+            path: /
+            port: 80
+            initialDelaySeconds: 5
+            periodSeconds: 5
+            successThreshold: 1
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "250m"
+          limits:
+            memory: "512Mi"
+            cpu: "250m"                
       restartPolicy: Always
-      schedulerName: default-scheduler
-      securityContext: {}
-      terminationGracePeriodSeconds: 30

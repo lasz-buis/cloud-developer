@@ -16,7 +16,7 @@ spec:
         api: external        
     spec:
       containers:
-      - image: lasz/udacity-frontend:v0.1.0
+      - image: lasz/udacity-frontend:v0.1.1
         name: frontend
         imagePullPolicy: Always          
         ports:

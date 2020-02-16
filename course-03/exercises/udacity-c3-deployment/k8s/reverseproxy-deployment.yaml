@@ -13,6 +13,7 @@ spec:
     metadata:
       labels:
         service: reverseproxy
+        role: ${TARGET_ROLE}
     spec:
       containers:
       - image: lasz/reverseproxy:v0.1.0

@@ -1,9 +1,9 @@
 apiVersion: v1
 kind: Service
 metadata:
+  name: backend-user
   labels:
     service: backend-user
-  name: backend-user
 spec:
   selector:
     service: backend-user
@@ -11,6 +11,3 @@ spec:
   - name: "8080"
     port: 8080
     targetPort: 8080
-  # - name: "postges"
-  #   port: 5432
-  #   targetPort: 5432

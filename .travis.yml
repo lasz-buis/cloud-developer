@@ -60,7 +60,12 @@
 # - kubectl apply -f ./course-03/exercises/udacity-c3-deployment/k8s/reverseproxy-deployment.yaml 
 
 language: minimal
-
+branches:
+  only:
+  - dev
+cache:
+  directories:
+  - "$HOME/google-cloud-sdk"
 services: docker
 
 env:

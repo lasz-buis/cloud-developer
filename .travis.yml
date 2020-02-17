@@ -82,10 +82,10 @@ before_install:
 #     cd $TRAVIS_BUILD_DIR;
 #   fi
 
-- if [ ! -d "$HOME/google-cloud-sdk/bin" ]; then 
-    rm -rf "$HOME/google-cloud-sdk"
-    curl https://sdk.cloud.google.com | bash > /dev/null
-  fi
+# - if [ ! -d "$HOME/google-cloud-sdk/bin" ]; then 
+#     rm -rf "$HOME/google-cloud-sdk"
+#     curl https://sdk.cloud.google.com | bash > /dev/null
+#   fi
 
 install:
   - docker-compose -f course-03/exercises/udacity-c3-deployment/docker/docker-compose-build.yaml build --parallel 

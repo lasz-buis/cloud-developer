@@ -30,7 +30,7 @@ before_install:
   - curl -LO https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl
   - chmod +x ./kubectl
   - sudo mv ./kubectl /usr/local/bin/kubectl
-
+  - gcloud_install.sh
 # - if [ ! -d $HOME/gcloud/google-cloud-sdk ]; then
 #     mkdir -p $HOME/gcloud &&
 #     wget https://dl.google.com/dl/cloudsdk/release/google-cloud-sdk.tar.gz --directory-prefix=$HOME/gcloud &&
@@ -55,7 +55,7 @@ install:
   - docker push lasz/udacity-restapi-feed:v0.1.2
   - docker push lasz/udacity-restapi-user:v0.1.2
   - docker push lasz/udacity-frontend
-  # - docker push lasz/reverseproxy:v0.1.0
+  - docker push lasz/reverseproxy:v0.1.0
 
   # - gcloud auth activate-service-account --key-file ${KEY_FILE}
   # - gcloud config set project ${PROJECT_ID}

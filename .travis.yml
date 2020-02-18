@@ -53,9 +53,9 @@ install:
   - docker push lasz/udacity-frontend
   - docker push lasz/reverseproxy:v0.1.0
 
-  - gcloud auth activate-service-account --key-file ${KEY_FILE}
-  - gcloud config set project ${PROJECT_ID}
-  - gcloud container clusters get-credentials ${K8s_CLUSTER} --zone ${ZONE} --project ${PROJECT_ID}
+  - gcloud auth activate-service-account --key-file $KEY_FILE
+  - gcloud config set project $PROJECT_ID
+  - gcloud container clusters get-credentials $K8s_CLUSTER --zone $ZONE --project $PROJECT_ID
   - gcloud auth configure-docker
   
   # - kubectl apply -f ./course-03/exercises/udacity-c3-deployment/k8s/aws-secret.yaml

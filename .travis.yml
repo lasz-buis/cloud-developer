@@ -3,9 +3,9 @@ branches:
   only:
   - dev
 
-cache:
-  directories:
-  - "$HOME/google-cloud-sdk"
+# cache:
+#   directories:
+#   - "$HOME/google-cloud-sdk"
 
 services: docker
 
@@ -30,7 +30,8 @@ before_install:
   - curl -LO https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl
   - chmod +x ./kubectl
   - sudo mv ./kubectl /usr/local/bin/kubectl
-  # - gcloud_install.sh
+  - chmod +x gcloud_install.sh
+  - ./gcloud_install.sh
 # - if [ ! -d $HOME/gcloud/google-cloud-sdk ]; then
 #     mkdir -p $HOME/gcloud &&
 #     wget https://dl.google.com/dl/cloudsdk/release/google-cloud-sdk.tar.gz --directory-prefix=$HOME/gcloud &&

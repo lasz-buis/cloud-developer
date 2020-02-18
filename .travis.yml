@@ -57,10 +57,9 @@ install:
   - gcloud config set project $PROJECT_ID
   - gcloud container clusters get-credentials $K8s_CLUSTER --zone $ZONE --project $PROJECT_ID
   - gcloud auth configure-docker
-  
-  # - kubectl apply -f ./course-03/exercises/udacity-c3-deployment/k8s/aws-secret.yaml
-  # - kubectl apply -f ./course-03/exercises/udacity-c3-deployment/k8s/env-configmap.yaml
-  # - kubectl apply -f ./course-03/exercises/udacity-c3-deployment/k8s/env-secret.yaml
+  - kubectl apply -f ./course-03/exercises/udacity-c3-deployment/k8s/aws-secret.yaml
+  - kubectl apply -f ./course-03/exercises/udacity-c3-deployment/k8s/env-configmap.yaml
+  - kubectl apply -f ./course-03/exercises/udacity-c3-deployment/k8s/env-secret.yaml
   # - kubectl apply -f ./course-03/exercises/udacity-c3-deployment/k8s/backend-feed-service.yaml
   # - kubectl apply -f ./course-03/exercises/udacity-c3-deployment/k8s/backend-user-service.yaml
   # - kubectl apply -f ./course-03/exercises/udacity-c3-deployment/k8s/frontend-service.yaml

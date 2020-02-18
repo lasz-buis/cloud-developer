@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: frontend
+  labels:
+    service: frontend
+spec:
+  type: LoadBalancer   
+  selector:
+    service: frontend
+    version: green
+  ports:
+  - name: "8100"
+    port: 8100
+    targetPort: 80 

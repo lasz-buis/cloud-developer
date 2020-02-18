@@ -1,5 +1,4 @@
-# apiVersion: apps/v1
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
@@ -37,9 +36,9 @@ spec:
           httpGet:
             path: /
             port: 8080
-            initialDelaySeconds: 5
-            periodSeconds: 5
-            successThreshold: 1       
+          initialDelaySeconds: 5
+          periodSeconds: 5
+          successThreshold: 1       
         env:
         - name: URL
           valueFrom:

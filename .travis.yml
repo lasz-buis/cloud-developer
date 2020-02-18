@@ -32,7 +32,7 @@ before_install:
   - sudo mv ./kubectl /usr/local/bin/kubectl
   - chmod +x gcloud_install.sh
   - ./gcloud_install.sh
-  - openssl aes-256-cbc -K $TRAVIS_ENCRYPTED_key -iv $TRAVIS_ENCRYPTED_iv -in ${KEY_FILE}.enc -out ${KEY_FILE} -d
+  - openssl aes-256-cbc -K $encrypted_d21fcd71de28_key -iv $encrypted_d21fcd71de28_iv -in ${KEY_FILE}.enc -out ${KEY_FILE} -d
 # - if [ ! -d $HOME/gcloud/google-cloud-sdk ]; then
 #     mkdir -p $HOME/gcloud &&
 #     wget https://dl.google.com/dl/cloudsdk/release/google-cloud-sdk.tar.gz --directory-prefix=$HOME/gcloud &&

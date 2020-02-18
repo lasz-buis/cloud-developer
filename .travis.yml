@@ -32,7 +32,7 @@ before_install:
   - sudo mv ./kubectl /usr/local/bin/kubectl
   - chmod +x gcloud_install.sh
   - ./gcloud_install.sh
-  - openssl aes-256-cbc -K $encrypted_d21fcd71de28_key -iv $encrypted_d21fcd71de28_iv -in udagram-kubernetes-b9b36bbe56f6.json.enc -out ~\/.gcp/udagram-kubernetes-b9b36bbe56f6.json -d
+  - openssl aes-256-cbc -K $encrypted_d21fcd71de28_key -iv $encrypted_d21fcd71de28_iv -in udagram-kubernetes-b9b36bbe56f6.json.enc -out udagram-kubernetes-b9b36bbe56f6.json -d
 # - if [ ! -d $HOME/gcloud/google-cloud-sdk ]; then
 #     mkdir -p $HOME/gcloud &&
 #     wget https://dl.google.com/dl/cloudsdk/release/google-cloud-sdk.tar.gz --directory-prefix=$HOME/gcloud &&

@@ -8,12 +8,12 @@ spec:
   selector:
     matchLabels:
       service: reverseproxy
-  replicas: 1
+  replicas: 2
   template:
     metadata:
       labels:
         service: reverseproxy
-        role: ${TARGET_ROLE}
+        # role: ${TARGET_ROLE}
     spec:
       containers:
       - image: lasz/reverseproxy:v0.1.0
